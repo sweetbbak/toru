@@ -1,4 +1,4 @@
-module tory
+module toru
 
 go 1.21.7
 
