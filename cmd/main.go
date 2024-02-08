@@ -1,18 +1,14 @@
 package main
 
 import (
-	// "bytes"
 	"errors"
 	"fmt"
-	"syscall"
-
-	// "io"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"path"
-	"strings"
+	"syscall"
 	"time"
 	"toru/pkg/nyaa"
 
@@ -146,18 +142,7 @@ func streamMagnet(magnet string, usePlayer bool) error {
 		// block until at least the video is done
 		<-done
 	}
-
 	return nil
-}
-
-func escapeUrl(u string) string {
-	u = strings.ReplaceAll(u, "'", "")
-	u = strings.ReplaceAll(u, "\n", "")
-	u = strings.ReplaceAll(u, " ", "_")
-	u = strings.ReplaceAll(u, "_-_", "_")
-	u = strings.ReplaceAll(u, "__", "_")
-	u = strings.ReplaceAll(u, "--", "-")
-	return u
 }
 
 // TODO: make use of all search parameters and expose them to user
@@ -185,11 +170,10 @@ func fzfMenu(m []nyaa.Media) (nyaa.Media, error) {
 			if i == -1 {
 				return "lol"
 			}
-			return fmt.Sprintf("%s\n%s\nDate - %s\n%s\nDownloads %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSize - %v",
+
+			return fmt.Sprintf("%s\n%s\nDownloads: %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSize: %v\n",
 				m[i].Name,
-				WrapString(m[i].Description, 55),
 				m[i].Date.Format(time.DateTime),
-				m[i].Category,
 				m[i].Downloads,
 				m[i].Seeders,
 				m[i].Leechers,
@@ -197,6 +181,7 @@ func fzfMenu(m []nyaa.Media) (nyaa.Media, error) {
 			)
 		}),
 	)
+
 	// User has selected nothing
 	if err != nil {
 		if errors.Is(err, fzf.ErrAbort) {
@@ -242,11 +227,13 @@ func Torrenter(args []string) error {
 		return err
 	}
 
-	fmt.Printf("%s\n%s\nDate - %s\n%s\nDownloads %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSize - %v, %s",
+	for _, a := range sel.Files {
+		println(a.Name())
+	}
+
+	fmt.Printf("%s\n%s\nDownloads: %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSize: %v\n%s",
 		sel.Name,
-		WrapString(sel.Description, 55),
 		sel.Date.Format(time.DateTime),
-		sel.Category,
 		sel.Downloads,
 		sel.Seeders,
 		sel.Leechers,
@@ -267,7 +254,8 @@ func init() {
 }
 
 func main() {
-	args, err := flags.Parse(&opts)
+	p := flags.NewParser(&opts, flags.Default)
+	args, err := p.Parse()
 	if flags.WroteHelp(err) {
 		os.Exit(0)
 	}
@@ -277,6 +265,15 @@ func main() {
 
 	if opts.Verbose {
 		Debug = log.Printf
+	}
+
+	if !opts.Latest && opts.Search == "" && opts.Magnet == "" && len(args) < 1 {
+		s := userInput("Search for an anime")
+		if s == "" {
+			p.WriteHelp(os.Stderr)
+			os.Exit(0)
+		}
+		opts.Search = s
 	}
 
 	if err := Torrenter(args); err != nil {

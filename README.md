@@ -45,19 +45,51 @@ go build
 
 ## Examples
 
+View the latest anime on nyaa.si in an interactive fzf session
 ```sh
-# Directly stream from magnet links
-toru --magnet 'magnet:?xt=urn:btih:1a4fe542f61743b794272e1acdd3878b1fa73c5a&dn=%5BSubsPlease%5D%20Akuyaku%20Reijou%20Level%2099%20-%2005%20%28480p%29%20%5B0D52BF4C%5D.mkv&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce'
-# outputs a link that you can use to stream the torrent
-# 'http://localhost:8080/Video content.mkv'
-
-# View the latest on nyaa.si in an interactive terminal session
 toru --latest
+```
 
+Search for a specific keyword
+```sh
 # Search for a series
 toru --search "Akuyaku"
 ```
 
+If you know the magnet link for the content you can directly download or stream it
+
+```sh
+toru --stream --magnet 'magnet:?xt=urn:btih:1a4fe542f61743b794272e1acdd3878b1fa73c5a&dn=%5BSubsPlease%5D%20Akuyaku%20Reijou%20Level%2099%20-%2005%20%28480p%29%20%5B0D52BF4C%5D.mkv&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce'
+toru --download --magnet 'magnet:?xt=urn:btih:1a4fe542f61743b794272e1acdd3878b1fa73c5a&dn=%5BSubsPlease%5D%20Akuyaku%20Reijou%20Level%2099%20-%2005%20%28480p%29%20%5B0D52BF4C%5D.mkv&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce'
+```
+
+All of the above outputs a link that you can use to stream the torrent `'http://localhost:8080/Video content.mkv'`
+you can treat this link like any other http link and stream it, download it, use `yt-dlp`, open it in the browser etc...
+
+
 ## Features
+[X] Stream anime from torrents
+[X] add Nyaa.si as a source
+[ ] add a generic torrent tracker library for Korean and American movies
+[ ] package as various formats (AUR, DEB, Flatpak, AppImage, Release binaries)
+[ ] ensure compatibility across platforms and aim for consistent compatibility (should work but currently untested)
 
 ## Roadmap
+
+- Daemonize into the background and listen for commands on a socket (optional for user, sometimes this is annoying)
+- Simple torrent client features (download|seed|add magnet|stream|search)
+- Look into file and search caching
+- Add other trackers besides `nyaa.si`
+- Expand user interface with bubbletea
+- Ensure we are not straining or leeching off of the network more than we are giving
+
+## Contributing
+PR's welcome! This project currently uses Golang 1.21.7 along with standard go formatting using `gopls`
+TODO: add a development containerfile and automate building binaries for all platforms
+
+## Why though?
+Because scraping is annoying af and it constantly breaks. On top of that, *someone* is paying for those servers.
+Torrents are more resistant to takedowns and hopefully will have more longevity.
+
+## Credits
+![anacrolix/torrent](https://github.com/anacrolix/torrent)
