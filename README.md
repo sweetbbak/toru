@@ -25,7 +25,7 @@ directly from the command line in MPV or your favorite video player (including t
 `toru` will serve the selected anime over port `8080` by default on `localhost` and it can be treated
 like any other http link. `toru` can also be used as a makeshift torrent client for downloading magnet links
 
-![example of toru in progress](assets/example.webm)
+![example of toru in progress](assets/example.gif)
 
 ## Table of Contents
 
