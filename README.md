@@ -25,6 +25,10 @@ directly from the command line in MPV or your favorite video player (including t
 `toru` will serve the selected anime over port `8080` by default on `localhost` and it can be treated
 like any other http link. `toru` can also be used as a makeshift torrent client for downloading magnet links
 
+<p align="center">
+  <img src="assets/example.webm" />
+</p>
+
 ## Table of Contents
 
 - [Install](#install)
@@ -49,7 +53,7 @@ toru --magnet 'magnet:?xt=urn:btih:1a4fe542f61743b794272e1acdd3878b1fa73c5a&dn=%
 # outputs a link that you can use to stream the torrent
 # 'http://localhost:8080/Video content.mkv'
 
-# View the latest on nyaa.si
+# View the latest on nyaa.si in an interactive terminal session
 toru --latest
 
 # Search for a series

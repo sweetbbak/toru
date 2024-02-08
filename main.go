@@ -17,6 +17,7 @@ import (
 	"toru/pkg/nyaa"
 
 	"github.com/anacrolix/torrent"
+	"github.com/dustin/go-humanize"
 	"github.com/jessevdk/go-flags"
 	fzf "github.com/ktr0731/go-fuzzyfinder"
 	// "github.com/phayes/freeport"
@@ -93,20 +94,6 @@ func streamMagnet(magnet string, usePlayer bool) error {
 		}
 
 		done := make(chan bool)
-
-		// go func() {
-		// 	// copy video to filesystem
-		// 	tr := f.NewReader()
-		// 	defer tr.Close()
-
-		// 	ch := done
-		// 	var description bytes.Buffer
-
-		// 	if _, err := io.Copy(&description, tr); err != nil {
-		// 		panic(err)
-		// 	}
-		// 	ch <- true
-		// }()
 
 		fname := f.DisplayPath()
 		fname = escapeUrl(fname)
@@ -198,16 +185,15 @@ func fzfMenu(m []nyaa.Media) (nyaa.Media, error) {
 			if i == -1 {
 				return "lol"
 			}
-			return fmt.Sprintf("%s\n%s\nDate - %s\n%s\nDownloads %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSubmitted by - %v\nSize - %v",
+			return fmt.Sprintf("%s\n%s\nDate - %s\n%s\nDownloads %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSize - %v",
 				m[i].Name,
 				WrapString(m[i].Description, 55),
-				m[i].Date,
+				m[i].Date.Format(time.DateTime),
 				m[i].Category,
 				m[i].Downloads,
 				m[i].Seeders,
 				m[i].Leechers,
-				m[i].Submitter,
-				m[i].Size,
+				humanize.Bytes(m[i].Size),
 			)
 		}),
 	)
@@ -256,16 +242,15 @@ func Torrenter(args []string) error {
 		return err
 	}
 
-	fmt.Printf("%s\n%s\nDate - %s\n%s\nDownloads %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSubmitted by - %v\nSize - %v\n%v\n",
+	fmt.Printf("%s\n%s\nDate - %s\n%s\nDownloads %d\n[\x1b[32m%v\x1b[0m|\x1b[31m%v\x1b[0m]\nSize - %v, %s",
 		sel.Name,
 		WrapString(sel.Description, 55),
-		sel.Date,
+		sel.Date.Format(time.DateTime),
 		sel.Category,
 		sel.Downloads,
 		sel.Seeders,
 		sel.Leechers,
-		sel.Submitter,
-		sel.Size,
+		humanize.Bytes(sel.Size),
 		sel.Magnet,
 	)
 
