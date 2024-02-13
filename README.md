@@ -36,6 +36,8 @@ like any other http link. `toru` can also be used as a makeshift torrent client 
 
 ![example of toru in progress](assets/example.gif)
 
+![example of toru in progress](assets/search.png)
+
 ## Table of Contents
 
 - [Install](#install)
