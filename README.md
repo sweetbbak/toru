@@ -13,10 +13,19 @@
 <br>
 </p>
 
+<p align="center">
+<a href="#golang"><img src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white">
+(https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black
+https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white
+https://img.shields.io/badge/-OpenBSD-%23FCC771?style=for-the-badge&logo=openbsd&logoColor=black
+https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0
+</p>
+
 <h3 align="center">
 A CLI tool to browse and stream anime with the power of web-torrents. Ani-cli meets Miru.
 </h3>
 
+![visitors](https://visitor-badge.glitch.me/badge?page_id=page.id&left_color=green&right_color=red)
 
 `toru` allows you to stream torrents from the command line. You can view the latest anime on nyaa.si
 or provide a search query and then pick an anime from a fzf-like interface, and then stream that episode
@@ -47,35 +56,73 @@ go build
 
 View the latest anime on nyaa.si in an interactive fzf session
 ```sh
-toru --latest
+toru search --latest
 ```
 
 Search for a specific keyword
 ```sh
 # Search for a series
-toru --search "Akuyaku"
+toru search "Akuyaku"
 ```
 
 If you know the magnet link for the content you can directly download or stream it
 
 ```sh
-toru --stream --magnet 'magnet:?xt=urn:btih:1a4fe542f61743b794272e1acdd3878b1fa73c5a&dn=%5BSubsPlease%5D%20Akuyaku%20Reijou%20Level%2099%20-%2005%20%28480p%29%20%5B0D52BF4C%5D.mkv&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce'
-toru --download --magnet 'magnet:?xt=urn:btih:1a4fe542f61743b794272e1acdd3878b1fa73c5a&dn=%5BSubsPlease%5D%20Akuyaku%20Reijou%20Level%2099%20-%2005%20%28480p%29%20%5B0D52BF4C%5D.mkv&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce'
+toru stream --magnet 'magnet:?xt=urn:btih:1...announce'
+toru download --magnet 'magnet:?xt=urn:btih:1...announce'
 ```
 
-All of the above outputs a link that you can use to stream the torrent `'http://localhost:8080/Video content.mkv'`
-you can treat this link like any other http link and stream it, download it, use `yt-dlp`, open it in the browser etc...
+All of the above outputs a link that you can use to stream the torrent `'http://localhost:8080/Video_content.mkv'`
+you can treat this link like any other http link and stream it with `mpv` or `vlc`, download it, use `yt-dlp`, or open it in the browser etc...
 
+### Handling output and input
+
+You can use toru to search for anime and other media types and then output the results in multiple formats.
+Output in Json and parsing that output with `jq`:
+
+```sh
+toru search --latest --json | jq -r '.[]|.Name,.Magnet'
+```
+
+Output in a human readable pretty format:
+
+```sh
+toru search "akuyaku 99 1080p"
+# Outputs:
+[Erai-raws] Akuyaku Reijou Level 99 - 01 [1080p][Multiple Subtitle] [ENG][POR-BR][SPA-LA][SPA][ARA][FRE][GER][ITA][RUS]
+2024-01-09 07:36:29
+Downloads: 1203
+[33|0]
+Size: 727 MB
+magnet:... [ magnet link here ]
+
+```
+
+### Creating your own CLI tool using toru
+```sh
+# Create a JSON file using toru
+toru search --latest --json > out.json
+# Here is a simple example of using fzf and toru to create a simple interace to select and play torrents
+# you can also replace toru with any CLI bittorrent client
+cat out.json | jq '.[].Name' | \
+fzf --preview='cat out.json | jq -r ".[{n}]"' \
+  --bind "enter:execute(cat out.json | jq -r '.[{n}].Magnet')+abort" | \
+  xargs toru stream --magnet
+```
+
+> [!IMPORTANT]\
+> From our next scheduled major release (v12, releasing on May 26, 2024), we will begin removing third-party extensions from the above list that are not up to date with at least our previous major release.\
+> For example, when v12 is released, we will remove any extensions that don't support `v11.0.0` or higher.\
+> Please create a PR to update the version number of your extension in this README following each update of your extension.
 
 ## Features
-[X] Stream anime from torrents
-[X] add Nyaa.si as a source
-[ ] add a generic torrent tracker library for Korean and American movies
-[ ] package as various formats (AUR, DEB, Flatpak, AppImage, Release binaries)
-[ ] ensure compatibility across platforms and aim for consistent compatibility (should work but currently untested)
+- [X] Stream anime from torrents
+- [X] add Nyaa.si as a source
+- [ ] add a generic torrent tracker library for Korean and American movies
+- [ ] package as various formats (AUR, DEB, Flatpak, AppImage, Release binaries)
+- [ ] ensure compatibility across platforms and aim for consistent compatibility (should work but currently untested)
 
 ## Roadmap
-
 - Daemonize into the background and listen for commands on a socket (optional for user, sometimes this is annoying)
 - Simple torrent client features (download|seed|add magnet|stream|search)
 - Look into file and search caching
@@ -93,3 +140,8 @@ Torrents are more resistant to takedowns and hopefully will have more longevity.
 
 ## Credits
 ![anacrolix/torrent](https://github.com/anacrolix/torrent)
+
+## Support
+Consider creating a PR, taking up a minor issue on the TODO list, leaving an issue to help improve functionality or buy
+me a coffee!
+![](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)
