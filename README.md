@@ -50,15 +50,26 @@ like any other http link. `toru` can also be used as a makeshift torrent client 
 ```sh
 go install github.com/sweetbbak/toru/cmd/toru@latest
 ```
-*OR*
+*OR* build from source
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 go build
 ```
+automated pre-built binaries builds coming soon...
 
 ## Examples
 
-View the latest anime on nyaa.si in an interactive fzf session
+Search for an anime:
+```sh
+toru search -i
+```
+![example of toru in progress](assets/search.png)
+
+the selected torrent will begin playing and once the video player is closed
+you will have the option to select another episode, make another search query,
+or to exit.
+
+*View* the latest anime on nyaa.si in an interactive fzf session
 ```sh
 toru search --latest
 ```
@@ -76,16 +87,22 @@ toru stream --magnet 'magnet:?xt=urn:btih:1...announce'
 toru download --magnet 'magnet:?xt=urn:btih:1...announce'
 ```
 
-All of the above outputs a link that you can use to stream the torrent `'http://localhost:8080/Video_content.mkv'`
+All of the above outputs a link that you can use to stream the torrent `'http://localhost:8080/stream?ep=torrent_info_hash'`
 you can treat this link like any other http link and stream it with `mpv` or `vlc`, download it, use `yt-dlp`, or open it in the browser etc...
 
-### Handling output and input
+### Handling input and output
 
 You can use toru to search for anime and other media types and then output the results in multiple formats.
 Output in Json and parsing that output with `jq`:
 
 ```sh
 toru search --latest --json | jq -r '.[]|.Name,.Magnet'
+```
+
+Open a cached search session from a json file
+```sh
+toru search --json "one piece" > cache.json
+toru search --from-json cacne.json --interactive
 ```
 
 Output in a human readable pretty format:
@@ -115,9 +132,11 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 ```
 
 > [!IMPORTANT]\
-> From our next scheduled major release (v12, releasing on May 26, 2024), we will begin removing third-party extensions from the above list that are not up to date with at least our previous major release.\
-> For example, when v12 is released, we will remove any extensions that don't support `v11.0.0` or higher.\
-> Please create a PR to update the version number of your extension in this README following each update of your extension.
+> toru is in a very early development phase! In order to provide a consistent and smooth experience 
+> the CLI interface is subject to change. PR's and advice on project sturcture, pkg organization and
+> feedback on the UI of toru is much appreciated.
+> blah blah blah
+> blah blah blah
 
 ## Features
 - [X] Stream anime from torrents
@@ -148,4 +167,4 @@ Torrents are more resistant to takedowns and hopefully will have more longevity.
 ## Support
 Consider creating a PR, taking up a minor issue on the TODO list, leaving an issue to help improve functionality or buy
 me a coffee!
-![](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)
+![buy me a coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)
