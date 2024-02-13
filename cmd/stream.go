@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"toru/pkg/libtorrent"
-	"toru/pkg/player"
 
 	"github.com/dustin/go-humanize"
+	"github.com/sweetbbak/toru/pkg/libtorrent"
+	"github.com/sweetbbak/toru/pkg/player"
 )
 
 // takes any type of torrent file/url/magnet

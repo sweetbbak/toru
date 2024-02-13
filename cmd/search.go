@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"toru/pkg/libtorrent"
-	"toru/pkg/nyaa"
-	"toru/pkg/search"
 
 	"github.com/charmbracelet/lipgloss"
 	fzf "github.com/ktr0731/go-fuzzyfinder"
+	"github.com/sweetbbak/toru/pkg/libtorrent"
+	"github.com/sweetbbak/toru/pkg/nyaa"
+	"github.com/sweetbbak/toru/pkg/search"
 )
 
 func runSearch(cl *libtorrent.Client) error {

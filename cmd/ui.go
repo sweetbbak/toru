@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
-	"toru/pkg/nyaa"
-	"toru/pkg/search"
 	// "toru/pkg/ui"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/sweetbbak/toru/pkg/nyaa"
+	"github.com/sweetbbak/toru/pkg/search"
 )
 
 var cutePrint = lipgloss.NewStyle().Width(40).BorderStyle(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("63")).Padding(1, 2)
