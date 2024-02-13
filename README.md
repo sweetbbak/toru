@@ -46,7 +46,7 @@ like any other http link. `toru` can also be used as a makeshift torrent client 
 ## Install
 
 ```sh
-go install github.com/sweetbbak/cmd/toru@latest
+go install github.com/sweetbbak/toru/cmd/toru@latest
 ```
 *OR*
 ```sh
