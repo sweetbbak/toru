@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 	"os"
-	"toru/pkg/libtorrent"
 
 	"github.com/jessevdk/go-flags"
+	"github.com/sweetbbak/toru/pkg/libtorrent"
 )
 
 var (
