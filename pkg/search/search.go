@@ -7,9 +7,9 @@ import (
 	"log"
 	"os"
 	"time"
-	"toru/pkg/nyaa"
 
 	"github.com/dustin/go-humanize"
+	"github.com/sweetbbak/toru/pkg/nyaa"
 )
 
 // map user input into categories for interfacing with the CLI
