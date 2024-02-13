@@ -1,4 +1,4 @@
-module toru
+module github.com/sweetbbak/toru
 
 go 1.21.7
 
