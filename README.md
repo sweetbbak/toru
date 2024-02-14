@@ -47,6 +47,12 @@ like any other http link. `toru` can also be used as a makeshift torrent client 
 
 ## Install
 
+<details closed>
+  <summary>Install Go</summary>
+  <a href="https://go.dev/doc/install">Install go</a>
+  Go should also be available in most distro's package managers, as well as scoop and brew.
+</details>
+
 ```sh
 go install github.com/sweetbbak/toru/cmd/toru@latest
 ```
@@ -55,13 +61,32 @@ go install github.com/sweetbbak/toru/cmd/toru@latest
 git clone https://github.com/sweetbbak/toru.git && cd toru
 go build
 ```
-automated pre-built binaries builds coming soon...
+
+you can also use the justfile, the shell.nix file, or the Containerfile that is podman/docker agnostic
+```sh
+git clone https://github.com/sweetbbak/toru.git && cd toru
+just
+```
+
+Using `docker`, `podman` and `shell.nix`
+```sh
+git clone https://github.com/sweetbbak/toru.git && cd toru
+pm run --volume $(pwd):/toru -ti docker.io/nixos/nix:latest
+# inside the container run:
+cd toru
+nix-shell
+just
+```
+if you are on nix or have nix installed you can just use the shell.nix directly.
+
+automated pre-built builds coming soon...
 
 ## Examples
 
 Search for an anime:
 ```sh
 toru search -i
+toru search ""
 ```
 ![example of toru in progress](assets/search.png)
 
@@ -69,14 +94,13 @@ the selected torrent will begin playing and once the video player is closed
 you will have the option to select another episode, make another search query,
 or to exit.
 
-*View* the latest anime on nyaa.si in an interactive fzf session
+#### *View* the latest anime on nyaa.si in an interactive fzf session
 ```sh
 toru search --latest
 ```
 
-Search for a specific keyword
+#### Search for a specific keyword or series
 ```sh
-# Search for a series
 toru search "Akuyaku"
 ```
 
@@ -99,13 +123,13 @@ Output in Json and parsing that output with `jq`:
 toru search --latest --json | jq -r '.[]|.Name,.Magnet'
 ```
 
-Open a cached search session from a json file
+#### Open a cached search session from a json file
 ```sh
 toru search --json "one piece" > cache.json
 toru search --from-json cacne.json --interactive
 ```
 
-Output in a human readable pretty format:
+#### Output in a human readable format:
 
 ```sh
 toru search "akuyaku 99 1080p"
