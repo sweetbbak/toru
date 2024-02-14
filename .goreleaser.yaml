@@ -27,10 +27,10 @@ builds:
       - linux
       - windows
       - darwin
-      - android
+      # - android
     goarch:
       - amd64
-      - arm
+      # - arm
       - arm64
 
     ignore:
@@ -39,15 +39,13 @@ builds:
 
       - goos: windows
         goarch: arm64
-      - goos: android
-        goarch: arm
-        goarm: 6
 
-      - goos: android
-        goarch: amd64
+      # - goos: android
+      #   goarch: arm
+      #   goarm: 6
+
       # - goos: android
       #   goarch: amd64
-      #   goarm: v2
 
     flags:
       - -v
@@ -62,17 +60,17 @@ builds:
       #   env:
       #     - CGO_ENABLED=1
           # - CC=arm-linux-gnueabi-gcc
-      - goos: android
-        goarch: amd64
-        goarm: v2
-        env:
-          - CGO_ENABLED=1
+      # - goos: android
+      #   goarch: amd64
+      #   goarm: v2
+      #   env:
+      #     - CGO_ENABLED=1
           # - CC=arm-linux-gnueabi-gcc
-      - goos: android
-        goarch: amd64
-        goarm: v3
-        env:
-          - CGO_ENABLED=1
+      # - goos: android
+      #   goarch: amd64
+      #   goarm: v3
+      #   env:
+      #     - CGO_ENABLED=1
           # - CC=arm-linux-gnueabi-gcc
 
       # - goos: android
@@ -82,11 +80,11 @@ builds:
       #     - CGO_ENABLED=1
       #     - CC=arm-linux-gnueabi-gcc
 
-      - goos: android
-        goarch: arm
-        goarm: 7
-        env:
-          - CGO_ENABLED=1
+      # - goos: android
+      #   goarch: arm
+      #   goarm: 7
+      #   env:
+      #     - CGO_ENABLED=1
           # - CC=arm-linux-gnueabi-gcc
 
       # - goos: android
@@ -95,18 +93,18 @@ builds:
       #   env:
       #     - CGO_ENABLED=1
           # - CC=arm-linux-gnueabi-gcc
-      - goos: android
-        goarch: arm64
-        goamd64: v2
-        env:
-          - CGO_ENABLED=1
+      # - goos: android
+      #   goarch: arm64
+      #   goamd64: v2
+      #   env:
+      #     - CGO_ENABLED=1
           # - CC=arm-linux-gnueabi-gcc
 
-      - goos: android
-        goarch: arm64
-        goamd64: v3
-        env:
-          - CGO_ENABLED=1
+      # - goos: android
+      #   goarch: arm64
+      #   goamd64: v3
+      #   env:
+      #     - CGO_ENABLED=1
           # - CC=arm-linux-gnueabi-gcc
 
 archives:
