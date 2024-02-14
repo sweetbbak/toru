@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	// "time"
+	"time"
 
-	// "github.com/dustin/go-humanize"
+	"github.com/dustin/go-humanize"
 	"github.com/sweetbbak/toru/pkg/libtorrent"
 	"github.com/sweetbbak/toru/pkg/player"
 	"github.com/sweetbbak/toru/pkg/search"
@@ -20,18 +20,18 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 	link := cl.ServeTorrent(t)
 
 	// consider deleting this as it sometimes conflicts with the fzf user interface
-	// go func() {
-	// 	for !t.Complete.Bool() {
-	// 		c := t.BytesCompleted()
-	// 		total := t.Length()
-	// 		s := humanize.Bytes(uint64(c))
-	// 		x := humanize.Bytes(uint64(total))
-	// 		numpeers := len(t.PeerConns())
-	// 		fmt.Printf("\x1b[2K\rDownloaded (%v/%v) from [%v] Peers...\n", s, x, numpeers)
-	// 		time.Sleep(time.Millisecond * 500)
-	// 	}
-	// 	println("Complete")
-	// }()
+	go func() {
+		for !t.Complete.Bool() {
+			c := t.BytesCompleted()
+			total := t.Length()
+			s := humanize.Bytes(uint64(c))
+			x := humanize.Bytes(uint64(total))
+			numpeers := len(t.PeerConns())
+			fmt.Printf("\x1b[2K\rDownloaded (%v/%v) from [%v] Peers...", s, x, numpeers)
+			time.Sleep(time.Millisecond * 500)
+		}
+		println("Complete")
+	}()
 
 	fmt.Println(link)
 	return link, nil
