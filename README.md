@@ -171,6 +171,7 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 
 ## Good issues to work on
 - [ ] get toru working on Android. (currently an issue with connecting to peers via UDP)
+- [ ] 
 
 ## Roadmap
 - Daemonize into the background and listen for commands on a socket (optional for user, sometimes this is annoying)
