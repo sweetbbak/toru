@@ -1,11 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/jessevdk/go-flags"
 	"github.com/sweetbbak/toru/pkg/libtorrent"
+)
+
+const (
+	binaryName = "toru"
+	version    = "v0.1"
 )
 
 var (
@@ -22,7 +28,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	s1, err := parser.AddCommand("search", "search torrents and output them in a given format", "search Nyaa.si for content", &searchopts)
 	if err != nil {
 		log.Fatal(err)
@@ -39,6 +44,7 @@ func init() {
 	s1.Aliases = []string{"se", "q"}
 	r.Aliases = []string{"", "r"}
 	d.Aliases = []string{"dl", "d"}
+	options.Port = "8080"
 }
 
 func main() {
@@ -54,9 +60,13 @@ func main() {
 		}
 	}
 
+	if options.Version {
+		fmt.Printf("%s %s", binaryName, version)
+	}
+
 	// TODO: func add config parsing here
 
-	cl := libtorrent.NewClient("tori", 8080)
+	cl := libtorrent.NewClient(binaryName, options.Port)
 	if err := cl.Init(); err != nil {
 		log.Fatal(err)
 	}

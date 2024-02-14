@@ -23,7 +23,7 @@ type Client struct {
 	// Seed or no
 	Seed bool
 	// Port to stream torrents on
-	Port int
+	Port string
 	// Default torrent client options
 	torrentClient *torrent.Client
 	// server
@@ -33,7 +33,7 @@ type Client struct {
 }
 
 // create a default client, must call Init afterwords
-func NewClient(name string, port int) *Client {
+func NewClient(name string, port string) *Client {
 	return &Client{
 		Name: name,
 		Port: port,
@@ -107,7 +107,7 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 
 // start the server in the background
 func (c *Client) StartServer() {
-	port := fmt.Sprintf(":%d", c.Port)
+	port := fmt.Sprintf(":%s", c.Port)
 	c.srv = &http.Server{Addr: port}
 
 	http.HandleFunc("/stream", c.handler)

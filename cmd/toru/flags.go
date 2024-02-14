@@ -8,6 +8,7 @@ type Options struct {
 	Verbose []bool `short:"v" long:"verbose" description:"Verbose output"`
 	Version bool   `short:"V" long:"version" description:"display version info and exit"`
 	Player  string `short:"p" long:"player" description:"set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string"`
+	Port    string `short:"P" long:"port" description:"set the port that torrents are streamed over"`
 }
 
 // Streaming options
