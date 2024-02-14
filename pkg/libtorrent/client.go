@@ -64,7 +64,7 @@ func (c *Client) Init() error {
 
 func (c *Client) ServeTorrents(ctx context.Context, torrents []*torrent.Torrent) {
 	for _, t := range torrents {
-		link := c.ServeTorrent(ctx, t)
+		link := c.ServeTorrent(t)
 		fmt.Println(link)
 	}
 }
@@ -97,7 +97,6 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 		<-ff.GotInfo()
 		ih := ff.InfoHash().String()
 
-		fmt.Printf("%s - %s - eq [%v]\n", ih, ep, (ih == ep))
 		if ih == ep {
 			f := GetVideoFile(ff)
 			w.Header().Set("Content-Type", "video/mp4")
@@ -126,7 +125,7 @@ func (c *Client) StartServer() {
 
 // Generate a link that can be used with the default clients server to play a torrent
 // that is already loaded into the client
-func (c *Client) ServeTorrent(ctx context.Context, t *torrent.Torrent) string {
+func (c *Client) ServeTorrent(t *torrent.Torrent) string {
 	mh := t.InfoHash().String()
 	return fmt.Sprintf("http://localhost:%d/stream?ep=%s\n", c.Port, mh)
 }

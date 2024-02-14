@@ -49,7 +49,7 @@ func runSearch(cl *libtorrent.Client) error {
 	}
 
 	if searchopts.Latest {
-		search.LatestAnime(searchopts.Args.Query, 1)
+		// search.LatestAnime(searchopts.Args.Query, 1)
 		s = &search.Search{
 			SortBy:    "id",
 			SortOrder: "desc",
@@ -76,8 +76,11 @@ func runSearch(cl *libtorrent.Client) error {
 	if searchopts.Stdout {
 		m.PrintResults()
 	}
+
 	if searchopts.Stream {
+		return SelectAndPlay(cl, m)
 	}
+
 	if !searchopts.Stdout && !searchopts.Json && !searchopts.Stream {
 		m.PrintResults()
 	}
@@ -129,6 +132,39 @@ LOOP:
 	}
 
 	return nil
+}
+
+func SelectAndPlay(cl *libtorrent.Client, res *search.Results) error {
+LOOP:
+	// select a result
+	choice, err := fzfMenu(res.Media)
+	if err != nil {
+		return err
+	}
+
+	// play that result
+	err = PlayTorrent(cl, choice.Magnet)
+	if err != nil {
+		return err
+	}
+
+	// select, search or exit
+	action, err := fzfMain()
+	if err != nil {
+		return err
+	}
+
+	switch action {
+	case "select":
+		goto LOOP
+	case "search":
+		InteractiveSearch(cl)
+	case "exit":
+		os.Exit(0)
+	}
+
+	return nil
+
 }
 
 func fzfMain() (string, error) {

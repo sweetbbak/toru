@@ -18,10 +18,26 @@ var (
 var parser = flags.NewParser(&options, flags.Default)
 
 func init() {
-	parser.AddCommand("stream", "stream torrents", "stream torrents", &streaming)
-	parser.AddCommand("search", "search torrents and output them in a given format", "search Nyaa.si for content", &searchopts)
-	parser.AddCommand("run", "run an interactive terminal session", "run an interactive terminal session with toru", &options)
-	d, _ := parser.AddCommand("download", "download torrents", "download torrent from .torrent file, magnet or URL to a .torrent file", &download)
+	s, err := parser.AddCommand("stream", "stream torrents", "stream torrents", &streaming)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s1, err := parser.AddCommand("search", "search torrents and output them in a given format", "search Nyaa.si for content", &searchopts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	r, err := parser.AddCommand("run", "run an interactive terminal session", "run an interactive terminal session with toru", &options)
+	if err != nil {
+		log.Fatal(err)
+	}
+	d, err := parser.AddCommand("download", "download torrents", "download torrent from .torrent file, magnet or URL to a .torrent file", &download)
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.Aliases = []string{"s", "play"}
+	s1.Aliases = []string{"se", "q"}
+	r.Aliases = []string{"", "r"}
 	d.Aliases = []string{"dl", "d"}
 }
 

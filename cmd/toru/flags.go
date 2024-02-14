@@ -1,20 +1,24 @@
 package main
 
+import "github.com/jessevdk/go-flags"
+
 // Global application options
 type Options struct {
 	// verbosity with level
 	Verbose []bool `short:"v" long:"verbose" description:"Verbose output"`
+	Version bool   `short:"V" long:"version" description:"display version info and exit"`
+	Player  string `short:"p" long:"player" description:"set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string"`
 }
 
 // Streaming options
 type Stream struct {
-	Player      string `short:"p" long:"player" description:"which player to use along with its options and flags ie: 'mpv --vo=kitty' "`
-	Magnet      string `short:"m" long:"magnet" description:"stream torrent directly from the provided magnet link"`
-	TorrentFile string `short:"t" long:"torrent" description:"stream torrent directly from the provided torrent file"`
-	Remove      bool   `long:"rm" description:"remove cached files after exiting"`
-	Latest      bool   `short:"l" long:"latest" description:"view the latest anime on nyaa.si"`
+	Magnet      string         `short:"m" long:"magnet" description:"stream directly from the provided torrent magnet link"`
+	TorrentFile string         `short:"t" long:"torrent" description:"stream directly from the provided torrent file or torrent URL"`
+	Remove      bool           `long:"rm" description:"remove cached files after exiting"`
+	Latest      bool           `short:"l" long:"latest" description:"view the latest anime and select an episode"`
+	FromJson    flags.Filename `short:"j" long:"from-json" description:"resume selection from prior search saved as json [see: toru search --help]"`
 
-	// optional magnet link or torrent file
+	// optional magnet link or torrent file as a trailing argument instead of explicitly defined
 	Args struct {
 		Query string
 	} `positional-args:"yes"`
@@ -52,18 +56,3 @@ type Search struct {
 		Query string
 	} `positional-args:"yes"`
 }
-
-// type Category struct {
-// 	Anime           bool `short:"a" long:"anime" description:"sort by all anime [default]"`
-// 	AnimeMusicVideo bool `long:"music-video" description:"sort by music videos"`
-// 	AnimeEng        bool `long:"subs" description:"sort by english translated anime"`
-// 	AnimeNonEng     bool `long:"non-english" description:"sort by non english translated anime"`
-// 	AnimeRaw        bool `long:"raw" description:"sort by raw anime"`
-// 	All             bool `short:"A" long:"all" description:"sort by all categories"`
-// 	Audio           bool `long:"audio" description:"sort by all audio"`
-// 	AudioLossless   bool `long:"audio-lossless" description:"sort by lossless audio"`
-// 	Literature      bool `long:"literature" description:"sort by all literature"`
-// 	LiveAction      bool `long:"live-action" description:"sort by live action anime"`
-// 	Pictures        bool `long:"pictures" description:"sort by pictures"`
-// 	Software        bool `long:"software" description:"sort by software"`
-// }
