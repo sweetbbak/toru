@@ -46,6 +46,7 @@ type Search struct {
 	Multi     bool
 	Latest    bool
 	Category  string
+	ProxyURL  string
 
 	Args struct {
 		Query string
@@ -95,6 +96,10 @@ func (search *Search) Query() (*Results, error) {
 	s := nyaa.SearchParameters{}
 	s.SortBy = GetSortBy(search.SortBy)
 
+	if search.ProxyURL != "" {
+		s.Proxy = search.ProxyURL
+	}
+
 	if search.Filter != "" {
 		switch search.Filter {
 		case "no-remakes":
@@ -142,13 +147,19 @@ func (search *Search) Query() (*Results, error) {
 }
 
 // get the latest english subbed anime
-func LatestAnime(q string, page uint) (*Results, error) {
-	m, err := nyaa.Search(q, nyaa.SearchParameters{
+func LatestAnime(query, proxy string, page uint) (*Results, error) {
+	p := nyaa.SearchParameters{
 		Category:  nyaa.CategoryAnimeEnglishTranslated,
 		SortBy:    nyaa.SortByDate,
 		SortOrder: nyaa.SortOrderDescending,
 		Page:      page,
-	})
+	}
+
+	if proxy != "" {
+		p.Proxy = proxy
+	}
+
+	m, err := nyaa.Search(query)
 	if err != nil {
 		return nil, err
 	}

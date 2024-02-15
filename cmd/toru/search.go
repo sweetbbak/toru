@@ -98,7 +98,7 @@ func InteractiveSearch(cl *libtorrent.Client) error {
 		return err
 	}
 
-	m, err := search.LatestAnime(s, 1)
+	m, err := search.LatestAnime(s, searchopts.Proxy, 1)
 	if err != nil {
 		return err
 	}

@@ -48,7 +48,7 @@ func init() {
 
 	s.Aliases = []string{"s", "play"}
 	s1.Aliases = []string{"se", "q"}
-	r.Aliases = []string{"", "r"}
+	r.Aliases = []string{"r"}
 	d.Aliases = []string{"dl", "d"}
 	options.Port = "8080"
 }

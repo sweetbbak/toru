@@ -71,6 +71,7 @@ type SearchParameters struct {
 	SortBy    SortBy
 	SortOrder SortOrder
 	Page      uint
+	Proxy     string
 }
 
 type Media struct {
