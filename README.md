@@ -22,10 +22,8 @@
 </p>
 
 <h3 align="center">
-A CLI tool to browse and stream anime with the power of web-torrents. Ani-cli meets Miru.
+Toru: Stream Torrents instantly, straight from the Command Line
 </h3>
-
-![visitors](https://visitor-badge.glitch.me/badge?page_id=page.id&left_color=green&right_color=red)
 
 `toru` allows you to stream torrents from the command line. You can view the latest anime on nyaa.si
 or provide a search query and then pick an anime from a fzf-like interface, and then stream that episode
@@ -172,8 +170,10 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 > toru is in a very early development phase! In order to provide a consistent and smooth experience 
 > the CLI interface is subject to change. PR's and advice on project sturcture, pkg organization and
 > feedback on the UI of toru is much appreciated.
-> blah blah blah
-> blah blah blah
+>
+> Currently tested on Linux and Windows
+> I would much appreciate someone reporting on the functionality on any BSD or Mac
+> Android with termux currently has UDP issues. Idk much about how android works
 
 ## Features
 - [X] Stream anime from torrents
