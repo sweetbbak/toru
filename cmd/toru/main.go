@@ -60,10 +60,6 @@ func main() {
 		case flags.ErrorType:
 			if flagsErr == flags.ErrHelp {
 				os.Exit(0)
-			} else if flagsErr == flags.ErrCommandRequired {
-				parser.Active = parser.Find("run")
-			} else {
-				os.Exit(1)
 			}
 		default:
 			os.Exit(1)
