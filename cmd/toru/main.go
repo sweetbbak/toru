@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 
 	"github.com/jessevdk/go-flags"
 	"github.com/sweetbbak/toru/pkg/libtorrent"
@@ -40,6 +41,11 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	_, err = parser.AddCommand("version", "print version and debugging info", "print version and debugging info", &options)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	s.Aliases = []string{"s", "play"}
 	s1.Aliases = []string{"se", "q"}
 	r.Aliases = []string{"", "r"}
@@ -49,19 +55,19 @@ func init() {
 
 func main() {
 	if _, err := parser.Parse(); err != nil {
+		fmt.Printf("%w", err)
 		switch flagsErr := err.(type) {
 		case flags.ErrorType:
 			if flagsErr == flags.ErrHelp {
 				os.Exit(0)
+			} else if flagsErr == flags.ErrCommandRequired {
+				parser.Active = parser.Find("run")
+			} else {
+				os.Exit(1)
 			}
-			os.Exit(1)
 		default:
 			os.Exit(1)
 		}
-	}
-
-	if options.Version {
-		fmt.Printf("%s %s", binaryName, version)
 	}
 
 	// TODO: func add config parsing here
@@ -88,5 +94,8 @@ func main() {
 		if err := InteractiveSearch(cl); err != nil {
 			log.Fatal(err)
 		}
+	case "version":
+		fmt.Printf("%s %s %s/%s\n", binaryName, version, runtime.GOOS, runtime.GOARCH)
+		os.Exit(0)
 	}
 }

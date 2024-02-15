@@ -1,0 +1,192 @@
+.TH toru 1 "14 February 2024"
+.SH NAME
+toru \- anime streaming with web torrents 
+.SH SYNOPSIS
+\fBtoru\fP [CMD] [OPTIONS]
+.SH DESCRIPTION
+.B toru
+allows you to stream anime from the terminal using web torrents. You must specify
+a command and then can optionally add flags to modify the behavior. By default
+toru stores torrents in XDG_CACHE_HOME. toru uses nyaa.si to provide search capabilities.
+
+
+.SH OPTIONS
+.SS Application Options
+.TP
+\fB\fB\-v\fR, \fB\-\-verbose\fR\fP
+Verbose output
+.TP
+\fB\fB\-V\fR, \fB\-\-version\fR\fP
+display version info and exit
+.TP
+\fB\fB\-p\fR, \fB\-\-player\fR\fP
+set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string
+.TP
+\fB\fB\-P\fR, \fB\-\-port\fR\fP
+set the port that torrents are streamed over
+.SS Help Options
+.TP
+\fB\fB\-h\fR, \fB\-\-help\fR\fP
+Show this help message
+.SH COMMANDS
+.SS download
+download torrents
+
+download torrent from .torrent file, magnet or URL to a .torrent file
+
+\fBUsage\fP: toru [OPTIONS] download [download-OPTIONS]
+.TP
+
+\fBAliases\fP: dl, d
+
+.SS download torrents
+download torrent from .torrent file, magnet or URL to a .torrent file
+.TP
+\fB\fB\-d\fR, \fB\-\-dir\fR\fP
+parent directory to download torrents to
+.SS Help Options
+.TP
+\fB\fB\-h\fR, \fB\-\-help\fR\fP
+Show this help message
+.SS run
+run an interactive terminal session
+
+run an interactive terminal session with toru
+
+\fBUsage\fP: toru [OPTIONS] run [run-OPTIONS]
+.TP
+
+\fBAliases\fP: , r
+
+.SS run an interactive terminal session
+run an interactive terminal session with toru
+.TP
+\fB\fB\-v\fR, \fB\-\-verbose\fR\fP
+Verbose output
+.TP
+\fB\fB\-V\fR, \fB\-\-version\fR\fP
+display version info and exit
+.TP
+\fB\fB\-p\fR, \fB\-\-player\fR\fP
+set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string
+.TP
+\fB\fB\-P\fR, \fB\-\-port\fR\fP
+set the port that torrents are streamed over
+.SS Help Options
+.TP
+\fB\fB\-h\fR, \fB\-\-help\fR\fP
+Show this help message
+.SS search
+search torrents and output them in a given format
+
+search Nyaa.si for content
+
+\fBUsage\fP: toru [OPTIONS] search [search-OPTIONS]
+.TP
+
+\fBAliases\fP: se, q
+
+.SS search torrents and output them in a given format
+search Nyaa.si for content
+.TP
+\fB\fB\-b\fR, \fB\-\-sort-by\fR\fP
+sort results by a category [size|date|seeders|leechers|downloads]
+.TP
+\fB\fB\-o\fR, \fB\-\-sort-order\fR\fP
+sort by ascending or descending: options [asc|desc]
+.TP
+\fB\fB\-u\fR, \fB\-\-user\fR\fP
+search for content by a user
+.TP
+\fB\fB\-f\fR, \fB\-\-filter\fR\fP
+filter content. Options: [no-remakes|trusted]
+.TP
+\fB\fB\-p\fR, \fB\-\-page\fR\fP
+which results page to display [default 1]
+.TP
+\fB\fB\-s\fR, \fB\-\-stream\fR\fP
+stream selected torrents after search
+.TP
+\fB\fB\-d\fR, \fB\-\-download\fR\fP
+download selected torrents after search
+.TP
+\fB\fB\-m\fR, \fB\-\-multi\fR\fP
+choose multiple torrents to queue for downloading or streaming
+.TP
+\fB\fB\-n\fR, \fB\-\-latest\fR\fP
+view the latest anime
+.TP
+\fB\fB\-c\fR, \fB\-\-category\fR\fP
+f
+.TP
+\fB\fB\-l\fR, \fB\-\-list\fR\fP
+list all accepted arguments for searching by categories
+.TP
+\fB\fB\-j\fR, \fB\-\-json\fR\fP
+output search results as Json
+.TP
+\fB\fB\-P\fR, \fB\-\-print\fR\fP
+output search results in a pretty and readable format to stdout
+.TP
+\fB\fB\-i\fR, \fB\-\-fzf\fR\fP
+interact with the search results using fzf
+.SS Help Options
+.TP
+\fB\fB\-h\fR, \fB\-\-help\fR\fP
+Show this help message
+.SS stream
+stream torrents
+
+stream torrents
+
+\fBUsage\fP: toru [OPTIONS] stream [stream-OPTIONS]
+.TP
+
+\fBAliases\fP: s, play
+
+.SS stream torrents
+stream torrents
+.TP
+\fB\fB\-m\fR, \fB\-\-magnet\fR\fP
+stream directly from the provided torrent magnet link
+.TP
+\fB\fB\-t\fR, \fB\-\-torrent\fR\fP
+stream directly from the provided torrent file or torrent URL
+.TP
+\fB\fB\-\-rm\fR\fP
+remove cached files after exiting
+.TP
+\fB\fB\-l\fR, \fB\-\-latest\fR\fP
+view the latest anime and select an episode
+.TP
+\fB\fB\-j\fR, \fB\-\-from-json\fR\fP
+resume selection from prior search saved as json [see: toru search --help]
+.SS Help Options
+.TP
+\fB\fB\-h\fR, \fB\-\-help\fR\fP
+Show this help message
+.SS version
+print version and debugging info
+
+print version and debugging info
+
+\fBUsage\fP: toru [OPTIONS] version [version-OPTIONS]
+.TP
+.SS print version and debugging info
+print version and debugging info
+.TP
+\fB\fB\-v\fR, \fB\-\-verbose\fR\fP
+Verbose output
+.TP
+\fB\fB\-V\fR, \fB\-\-version\fR\fP
+display version info and exit
+.TP
+\fB\fB\-p\fR, \fB\-\-player\fR\fP
+set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string
+.TP
+\fB\fB\-P\fR, \fB\-\-port\fR\fP
+set the port that torrents are streamed over
+.SS Help Options
+.TP
+\fB\fB\-h\fR, \fB\-\-help\fR\fP
+Show this help message

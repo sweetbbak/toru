@@ -47,6 +47,19 @@ like any other http link. `toru` can also be used as a makeshift torrent client 
 
 ## Install
 
+Quick install a pre-built binary
+
+```sh
+export PREFIX="$HOME/bin"
+wget "https://github.com/sweetbbak/toru/releases/download/v0.1/toru_$(uname -s)_$(uname -m).tar.gz" -O - | tar -xz
+mv toru "${PREFIX}"
+```
+
+on Windows
+```sh
+iwr -Uri "https://github.com/sweetbbak/toru/releases/download/v0.1/toru_Windows_x86_64.zip" -OutFile toru_Windows_x86_64.zip
+```
+
 <details closed>
   <summary>Install Go</summary>
   <a href="https://go.dev/doc/install">Install go</a>

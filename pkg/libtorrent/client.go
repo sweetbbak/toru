@@ -49,6 +49,11 @@ func (c *Client) Init() error {
 		return err
 	}
 
+	// sanity check
+	if c.Port == "" {
+		c.Port = "8080"
+	}
+
 	c.DataDir = s
 	cfg.DefaultStorage = storage.NewFileByInfoHash(c.DataDir)
 
@@ -107,9 +112,9 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 
 // start the server in the background
 func (c *Client) StartServer() {
+	// :8080 for localhost:8080/
 	port := fmt.Sprintf(":%s", c.Port)
 	c.srv = &http.Server{Addr: port}
-
 	http.HandleFunc("/stream", c.handler)
 
 	go func() {
@@ -127,7 +132,7 @@ func (c *Client) StartServer() {
 // that is already loaded into the client
 func (c *Client) ServeTorrent(t *torrent.Torrent) string {
 	mh := t.InfoHash().String()
-	return fmt.Sprintf("http://localhost:%d/stream?ep=%s\n", c.Port, mh)
+	return fmt.Sprintf("http://localhost:%s/stream?ep=%s\n", c.Port, mh)
 }
 
 // old version of servetorrent, only works once lol. DOnt use, delete soon
@@ -148,10 +153,8 @@ func (c *Client) ServeSingleTorrent(ctx context.Context, t *torrent.Torrent) str
 		http.ServeContent(w, r, f.DisplayPath(), time.Unix(f.Torrent().Metainfo().CreationDate, 0), f.NewReader())
 	})
 
-	port := fmt.Sprintf(":%d", c.Port)
-	c.srv = &http.Server{Addr: port}
+	c.srv = &http.Server{Addr: c.Port}
 	server := c.srv
-	server.Addr = port
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
@@ -164,7 +167,7 @@ func (c *Client) ServeSingleTorrent(ctx context.Context, t *torrent.Torrent) str
 	}()
 
 	// print the link to the video
-	link = fmt.Sprintf("http://localhost%s/stream?ep=%s\n", port, fname)
+	link = fmt.Sprintf("http://localhost:%s/stream?ep=%s\n", c.Port, fname)
 	return link
 }
 
