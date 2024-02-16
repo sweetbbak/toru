@@ -73,15 +73,15 @@ func runStream(cl *libtorrent.Client) error {
 		}
 	}
 
-	if streaming.Args.Query != "" {
-		err := PlayTorrent(cl, streaming.Args.Query)
+	if streaming.TorrentFile != "" {
+		err := PlayTorrent(cl, streaming.TorrentFile)
 		if err != nil {
 			return err
 		}
 	}
 
-	if streaming.TorrentFile != "" {
-		err := PlayTorrent(cl, streaming.TorrentFile)
+	if streaming.Args.Query != "" {
+		err := PlayTorrent(cl, streaming.Args.Query)
 		if err != nil {
 			return err
 		}
