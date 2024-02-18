@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -54,8 +55,12 @@ func PlayTorrent(cl *libtorrent.Client, magnet string) error {
 		return err
 	}
 
+	var px *os.ProcessState
 	// wait for player to close
-	proc.Wait()
+	px, err = proc.Wait()
+	for !px.Exited() {
+	}
+
 	return nil
 }
 

@@ -205,3 +205,5 @@ Torrents are more resistant to takedowns and hopefully will have more longevity.
 Consider creating a PR, taking up a minor issue on the TODO list, leaving an issue to help improve functionality or buy
 me a coffee!
 ![buy me a coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)
+
+![moe-visitor-counter](https://count.getloli.com/get/@sweetbbak?theme=asoul)
