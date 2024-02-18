@@ -72,7 +72,7 @@ git clone https://github.com/sweetbbak/toru.git && cd toru
 go build -o toru ./cmd/toru
 ```
 
-you can also use the justfile, the shell.nix file, or the Containerfile that is podman/docker agnostic
+you can also use the justfile
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 just
@@ -83,17 +83,38 @@ or the makefile
 git clone https://github.com/sweetbbak/toru.git && cd toru
 make build
 ```
-</details>
 
-Using `docker`, `podman` and `shell.nix`
+Using `docker`, `podman` with  the `shell.nix` file on non-nixOS distros
+this will automatically pull the correct version of Go and install `just`
+so that building is easy.
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
+# mount the project directory inside the container
 podman run --volume $(pwd):/toru -ti docker.io/nixos/nix:latest
 # inside the container run:
-cd toru
+cd /toru
 nix-shell
 just
 ```
+
+### Building for different platforms and architectures
+
+Run to find your target architecture and platform:
+```sh
+go tool dist list
+```
+
+then use the environment variables `GOOS` and `GOARCH` before using
+the build command.
+
+Example:
+```sh
+GOOS=linux GOARCH=arm64 go build -o toru ./cmd/toru
+```
+_If you do this_ feel free to create an issue for a platform reporting how it went
+So far there is an issue with android and termux as well as arm 6.
+
+</details>
 
 if you are on nix or have nix installed you can just use the shell.nix directly and run `just` or `make` or use `go build -o toru ./cmd/toru`.
 
