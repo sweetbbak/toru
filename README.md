@@ -57,36 +57,43 @@ iwr -Uri "https://github.com/sweetbbak/toru/releases/download/v0.1/toru_Windows_
 <details closed>
   <summary>Install Go</summary>
   <a href="https://go.dev/doc/install">Install go</a>
-  Go should also be available in most distro's package managers, as well as scoop and brew.
+  This project requires go 1.21.7 or higher.
 </details>
 
 ```sh
 go install github.com/sweetbbak/toru/cmd/toru@latest
 ```
-*OR* build from source
-```sh
+<details closed>
+  <summary>Build from source</summary>
+---
 git clone https://github.com/sweetbbak/toru.git && cd toru
-go build
-```
+go build -o toru ./cmd/toru
+---
 
 you can also use the justfile, the shell.nix file, or the Containerfile that is podman/docker agnostic
-```sh
+---
 git clone https://github.com/sweetbbak/toru.git && cd toru
 just
-```
+---
+
+or the makefile
+---
+git clone https://github.com/sweetbbak/toru.git && cd toru
+make build
+---
+</details>
 
 Using `docker`, `podman` and `shell.nix`
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
-pm run --volume $(pwd):/toru -ti docker.io/nixos/nix:latest
+podman run --volume $(pwd):/toru -ti docker.io/nixos/nix:latest
 # inside the container run:
 cd toru
 nix-shell
 just
 ```
-if you are on nix or have nix installed you can just use the shell.nix directly.
 
-automated pre-built builds coming soon...
+if you are on nix or have nix installed you can just use the shell.nix directly and run `just` or `make` or use `go build -o toru ./cmd/toru`.
 
 ## Examples
 
