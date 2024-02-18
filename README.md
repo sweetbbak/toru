@@ -65,22 +65,24 @@ go install github.com/sweetbbak/toru/cmd/toru@latest
 ```
 <details closed>
   <summary>Build from source</summary>
----
+
+using Go is recommended alongside `gup` so that it can be easily updated
+```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 go build -o toru ./cmd/toru
----
+```
 
 you can also use the justfile, the shell.nix file, or the Containerfile that is podman/docker agnostic
----
+```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 just
----
+```
 
 or the makefile
----
+```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 make build
----
+```
 </details>
 
 Using `docker`, `podman` and `shell.nix`
