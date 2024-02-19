@@ -209,8 +209,8 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 - [ ] ensure compatibility across platforms and aim for consistent compatibility (should work but currently untested)
 
 ## Good issues to work on
+- [ ] add a package for Arch, Fedora, Nix, Scoop or otherwise
 - [ ] get toru working on Android. (currently an issue with connecting to peers via UDP)
-- [ ] 
 
 ## Roadmap
 - Daemonize into the background and listen for commands on a socket (optional for user, sometimes this is annoying)
@@ -229,7 +229,11 @@ Because scraping is annoying af and it constantly breaks. On top of that, *someo
 Torrents are more resistant to takedowns and hopefully will have more longevity.
 
 ## Credits
+torrenting library:
 ![anacrolix/torrent](https://github.com/anacrolix/torrent)
+
+Nyaa package is modified from here:
+![Feyko/nyaa-go](https://github.com/Feyko/nyaa-go)
 
 ## Support
 Consider creating a PR, taking up a minor issue on the TODO list, leaving an issue to help improve functionality or buy
