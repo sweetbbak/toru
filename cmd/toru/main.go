@@ -55,7 +55,6 @@ func init() {
 
 func main() {
 	if _, err := parser.Parse(); err != nil {
-		fmt.Printf("%w", err)
 		switch flagsErr := err.(type) {
 		case flags.ErrorType:
 			if flagsErr == flags.ErrHelp {
