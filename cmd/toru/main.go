@@ -82,9 +82,10 @@ func main() {
 			log.Fatal(err)
 		}
 	case "dl", "download":
-		if err := runSearch(cl); err != nil {
+		if err := DownloadTorrent(cl); err != nil {
 			log.Fatal(err)
 		}
+		os.Exit(0)
 	case "run", "interactive":
 		if err := InteractiveSearch(cl); err != nil {
 			log.Fatal(err)
