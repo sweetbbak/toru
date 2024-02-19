@@ -9,6 +9,7 @@
 <a href="#iOS"><img src="https://img.shields.io/badge/os-ios-yellow">
 <a href="#Steam-deck"><img src="https://img.shields.io/badge/os-steamdeck-yellow">
 <br>
+<a href="https://www.buymeacoffee.com/sweetbabyalaska"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black"></a>
 <a href="https://github.com/sweetbbak"><img src="https://img.shields.io/badge/creator-sweet-green"></a>
 <br>
 </p>
@@ -238,6 +239,5 @@ Nyaa package is modified from here:
 ## Support
 Consider creating a PR, taking up a minor issue on the TODO list, leaving an issue to help improve functionality or buy
 me a coffee!
-![buy me a coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)
 
 ![moe-visitor-counter](https://count.getloli.com/get/@sweetbbak?theme=asoul)
