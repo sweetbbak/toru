@@ -25,7 +25,7 @@ type Client struct {
 	// Port to stream torrents on
 	Port string
 	// Default torrent client options
-	torrentClient *torrent.Client
+	TorrentClient *torrent.Client
 	// server
 	srv *http.Server
 	// torrents
@@ -63,7 +63,16 @@ func (c *Client) Init() error {
 	}
 
 	c.StartServer()
-	c.torrentClient = client
+	c.TorrentClient = client
+	return nil
+}
+
+func (c *Client) DownloadTorrent(torrent string) error {
+	t, err := c.AddTorrent(torrent)
+	if err != nil {
+		return err
+	}
+	t.DownloadAll()
 	return nil
 }
 
@@ -89,7 +98,7 @@ func GetVideoFile(t *torrent.Torrent) *torrent.File {
 
 // handler for ServeTorrent
 func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
-	ts := c.torrentClient.Torrents()
+	ts := c.TorrentClient.Torrents()
 	ep := r.URL.Query().Get("ep")
 	ep = strings.TrimSpace(ep)
 	ep = strings.ReplaceAll(ep, "\n", "")
@@ -173,7 +182,7 @@ func (c *Client) ServeSingleTorrent(ctx context.Context, t *torrent.Torrent) str
 
 // returns a slice of loaded torrents or nil
 func (c *Client) ShowTorrents() []*torrent.Torrent {
-	return c.torrentClient.Torrents()
+	return c.TorrentClient.Torrents()
 }
 
 // generic add torrent function
@@ -188,7 +197,7 @@ func (c *Client) AddTorrent(tor string) (*torrent.Torrent, error) {
 }
 
 func (c *Client) AddMagnet(magnet string) (*torrent.Torrent, error) {
-	t, err := c.torrentClient.AddMagnet(magnet)
+	t, err := c.TorrentClient.AddMagnet(magnet)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +206,7 @@ func (c *Client) AddMagnet(magnet string) (*torrent.Torrent, error) {
 }
 
 func (c *Client) AddTorrentFile(file string) (*torrent.Torrent, error) {
-	t, err := c.torrentClient.AddTorrentFromFile(file)
+	t, err := c.TorrentClient.AddTorrentFromFile(file)
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +236,7 @@ func (c *Client) AddTorrentURL(url string) (*torrent.Torrent, error) {
 		return nil, err
 	}
 
-	t, err := c.torrentClient.AddTorrentFromFile(file.Name())
+	t, err := c.TorrentClient.AddTorrentFromFile(file.Name())
 	if err != nil {
 		return nil, err
 	}
@@ -237,13 +246,13 @@ func (c *Client) AddTorrentURL(url string) (*torrent.Torrent, error) {
 
 // stops the client and closes all connections to peers
 func (c *Client) Close() (errs []error) {
-	return c.torrentClient.Close()
+	return c.TorrentClient.Close()
 }
 
 // look through the torrent files the client is handling and return a torrent with a
 // matching info hash
 func (c *Client) FindByInfoHhash(infoHash string) (*torrent.Torrent, error) {
-	torrents := c.torrentClient.Torrents()
+	torrents := c.TorrentClient.Torrents()
 	for _, t := range torrents {
 		if t.InfoHash().AsString() == infoHash {
 			return t, nil
