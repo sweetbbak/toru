@@ -110,6 +110,5 @@ require (
 	zombiezen.com/go/sqlite v1.1.2 // indirect
 )
 
-replace github.com/sweetbbak/toru/pkg/libtorrent => ./pkg/libtorrent
-
-replace github.com/sweetbbak/toru => ./toru
+// replace github.com/sweetbbak/toru/pkg/libtorrent => ./pkg/libtorrent
+// replace github.com/sweetbbak/toru => ./toru
