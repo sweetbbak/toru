@@ -142,7 +142,12 @@ func (search *Search) Query() (*Results, error) {
 	s.Category = cat
 	res := &Results{}
 
+	// error parsing html or error getting nyaa page
 	res.Media, err = nyaa.Search(search.Args.Query, s)
+	if err != nil {
+		return nil, err
+	}
+
 	return res, nil
 }
 
@@ -159,7 +164,7 @@ func LatestAnime(query, proxy string, page uint) (*Results, error) {
 		p.Proxy = proxy
 	}
 
-	m, err := nyaa.Search(query)
+	m, err := nyaa.Search(query, p)
 	if err != nil {
 		return nil, err
 	}

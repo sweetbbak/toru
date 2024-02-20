@@ -51,7 +51,7 @@ type Search struct {
 	List        bool   `short:"l" long:"list" description:"list all accepted arguments for searching by categories"`
 	Json        bool   `short:"j" long:"json" description:"output search results as Json"`
 	Stdout      bool   `short:"P" long:"print" description:"output search results in a pretty and readable format to stdout"`
-	Interactive bool   `short:"i" long:"fzf" description:"interact with the search results using fzf"`
+	Interactive bool   `short:"i" long:"interactive" description:"interact with the search results using fzf"`
 
 	// actual search query, doesn't matter where it is placed and is OPTIONAL
 	Args struct {

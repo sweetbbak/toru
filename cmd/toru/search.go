@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path"
 
@@ -21,9 +22,9 @@ func runSearch(cl *libtorrent.Client) error {
 		return nil
 	}
 
-	if searchopts.Interactive {
-		return InteractiveSearch(cl)
-	}
+	// if searchopts.Interactive {
+	// 	return InteractiveSearch(cl)
+	// }
 
 	// build the query
 	if searchopts.Category != "" {
@@ -58,6 +59,10 @@ func runSearch(cl *libtorrent.Client) error {
 		}
 	}
 
+	if searchopts.Proxy != "" {
+		s.ProxyURL = searchopts.Proxy
+	}
+
 	// make the request for results to nyaa.si
 	m, err := s.Query()
 	if err != nil {
@@ -77,7 +82,7 @@ func runSearch(cl *libtorrent.Client) error {
 		m.PrintResults()
 	}
 
-	if searchopts.Stream {
+	if searchopts.Stream || searchopts.Interactive {
 		return SelectAndPlay(cl, m)
 	}
 
@@ -104,7 +109,10 @@ func InteractiveSearch(cl *libtorrent.Client) error {
 	}
 
 	cj := path.Join(cl.DataDir, "cache.json")
-	m.Cache(cj)
+	err = m.Cache(cj)
+	if err != nil {
+		log.Println(err)
+	}
 
 LOOP:
 	choice, err := fzfMenu(m.Media)
@@ -126,7 +134,9 @@ LOOP:
 	case "select":
 		goto LOOP
 	case "search":
-		InteractiveSearch(cl)
+		if err := InteractiveSearch(cl); err != nil {
+			log.Fatal(err)
+		}
 	case "exit":
 		os.Exit(0)
 	}
@@ -158,7 +168,9 @@ LOOP:
 	case "select":
 		goto LOOP
 	case "search":
-		InteractiveSearch(cl)
+		if err := InteractiveSearch(cl); err != nil {
+			log.Fatal(err)
+		}
 	case "exit":
 		os.Exit(0)
 	}
