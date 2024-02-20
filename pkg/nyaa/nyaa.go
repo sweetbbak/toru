@@ -17,12 +17,6 @@ var NyaaURL = "https://nyaa.si"
 
 var PageLimit uint = 100
 
-// set a proxy url like nyaa.iss.ink
-// set a proxy url like nyaa.iss.ink
-func SetProxyURL(proxyURL string) {
-	NyaaURL = proxyURL
-}
-
 func Search(search string, parameters ...SearchParameters) ([]Media, error) {
 	params, err := getOneParameterSet(parameters)
 	if err != nil {
