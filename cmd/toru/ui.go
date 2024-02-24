@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	// "toru/pkg/ui"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -49,7 +48,3 @@ func Prompt(prompt string) (string, error) {
 func prettyPrint(str string) {
 	fmt.Println(cutePrint.Render(str))
 }
-
-// func PrintMedia(m []nyaa.Media) {
-// 	mytable.PrintTable(m)
-// }
