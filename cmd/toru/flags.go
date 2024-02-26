@@ -5,10 +5,11 @@ import "github.com/jessevdk/go-flags"
 // Global application options
 type Options struct {
 	// verbosity with level
-	Verbose []bool `short:"v" long:"verbose" description:"Verbose output"`
-	Version bool   `short:"V" long:"version" description:"display version info and exit"`
-	Player  string `short:"p" long:"player"  description:"set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string"`
-	Port    string `short:"P" long:"port"    description:"set the port that torrents are streamed over"`
+	Verbose     []bool `short:"v" long:"verbose" description:"Verbose output"`
+	Version     bool   `short:"V" long:"version" description:"display version info and exit"`
+	DisableIPV6 bool   `short:"4" long:"ipv4" description:"use IPV4 instead of IPV6"`
+	Player      string `short:"p" long:"player"  description:"set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string"`
+	Port        string `short:"P" long:"port"    description:"set the port that torrents are streamed over"`
 }
 
 // Streaming options

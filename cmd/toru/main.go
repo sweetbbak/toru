@@ -68,6 +68,8 @@ func main() {
 	// TODO: func add config parsing here
 
 	cl := libtorrent.NewClient(binaryName, options.Port)
+	cl.DisableIPV6 = options.DisableIPV6
+
 	if err := cl.Init(); err != nil {
 		log.Fatal(err)
 	}

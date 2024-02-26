@@ -30,6 +30,8 @@ type Client struct {
 	srv *http.Server
 	// torrents
 	Torrents []*torrent.Torrent
+	// Disable IPV6
+	DisableIPV6 bool
 }
 
 // create a default client, must call Init afterwords
@@ -48,6 +50,8 @@ func (c *Client) Init() error {
 	if err != nil {
 		return err
 	}
+
+	cfg.DisableIPv6 = c.DisableIPV6
 
 	// sanity check
 	if c.Port == "" {
