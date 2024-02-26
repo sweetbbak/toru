@@ -88,7 +88,7 @@ func runStream(cl *libtorrent.Client) error {
 	}
 
 	if streaming.Latest {
-		res, err := search.LatestAnime(streaming.Args.Query, searchopts.Proxy, 1)
+		res, err := search.LatestAnime(streaming.Args.Query, options.Proxy, 1)
 		if err != nil {
 			return err
 		}

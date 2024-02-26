@@ -5,8 +5,6 @@ in
 
 pkgs.mkShellNoCC {
   packages = with pkgs; [
-    eza
-    helix
     go_1_21
   ];
 

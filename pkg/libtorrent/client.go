@@ -104,11 +104,13 @@ func GetVideoFile(t *torrent.Torrent) *torrent.File {
 func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	ts := c.TorrentClient.Torrents()
 	ep := r.URL.Query().Get("ep")
+	// idk why but this is always mangled af
 	ep = strings.TrimSpace(ep)
 	ep = strings.ReplaceAll(ep, "\n", "")
 
 	if ep == "" {
-		log.Fatal("ep is empty")
+		log.Println("server handler: Episode query is empty")
+		return
 	}
 
 	for _, ff := range ts {
@@ -145,10 +147,11 @@ func (c *Client) StartServer() {
 // that is already loaded into the client
 func (c *Client) ServeTorrent(t *torrent.Torrent) string {
 	mh := t.InfoHash().String()
-	return fmt.Sprintf("http://localhost:%s/stream?ep=%s\n", c.Port, mh)
+	return fmt.Sprintf("http://localhost:%s/stream?ep=%s", c.Port, mh)
 }
 
 // old version of servetorrent, only works once lol. DOnt use, delete soon
+// WARN do not use this | do not use this | do not fucking use this
 func (c *Client) ServeSingleTorrent(ctx context.Context, t *torrent.Torrent) string {
 	var link string
 	f := GetVideoFile(t)

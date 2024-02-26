@@ -10,6 +10,11 @@ type Options struct {
 	DisableIPV6 bool   `short:"4" long:"ipv4" description:"use IPV4 instead of IPV6"`
 	Player      string `short:"p" long:"player"  description:"set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string"`
 	Port        string `short:"P" long:"port"    description:"set the port that torrents are streamed over"`
+	Proxy       string `short:"x" long:"proxy"       description:"use a proxy URL like nyaa.iss.ink"`
+
+	Args struct {
+		Query string
+	} `positional-args:"yes"`
 }
 
 // Streaming options
@@ -42,7 +47,6 @@ type Search struct {
 	SortOrder   string `short:"o" long:"sort-order"  description:"sort by ascending or descending: options [asc|desc]"               choice:"asc"`
 	User        string `short:"u" long:"user"        description:"search for content by a user"`
 	Filter      string `short:"f" long:"filter"      description:"filter content. Options: [no-remakes|trusted]"`
-	Proxy       string `short:"x" long:"proxy"       description:"use a proxy URL like nyaa.iss.ink"`
 	Page        uint   `short:"p" long:"page"        description:"which results page to display [default 1]"`
 	Stream      bool   `short:"s" long:"stream"      description:"stream selected torrents after search"`
 	Download    bool   `short:"d" long:"download"    description:"download selected torrents after search"`

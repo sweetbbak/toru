@@ -59,8 +59,8 @@ func runSearch(cl *libtorrent.Client) error {
 		}
 	}
 
-	if searchopts.Proxy != "" {
-		s.ProxyURL = searchopts.Proxy
+	if options.Proxy != "" {
+		s.ProxyURL = options.Proxy
 	}
 
 	// make the request for results to nyaa.si
@@ -70,6 +70,7 @@ func runSearch(cl *libtorrent.Client) error {
 	}
 
 	// print and/or handle results
+	// TODO: change os.Stdout to a generic io.Writer and support a file directly
 	if searchopts.Json {
 		err := m.WriteToJson(os.Stdout)
 		if err != nil {
@@ -98,12 +99,18 @@ func InteractiveSearch(cl *libtorrent.Client) error {
 	header := cutePrint.Align(lipgloss.Center).Render("Toru, stream anime, no strings attached")
 	fmt.Println(header)
 
-	s, err := Prompt("Search for an anime: ")
-	if err != nil {
-		return err
+	var s string
+	var err error
+	if options.Args.Query == "" {
+		s, err = Prompt("Search for an anime: ")
+		if err != nil {
+			return err
+		}
+	} else {
+		s = options.Args.Query
 	}
 
-	m, err := search.LatestAnime(s, searchopts.Proxy, 1)
+	m, err := search.LatestAnime(s, options.Proxy, 1)
 	if err != nil {
 		return err
 	}

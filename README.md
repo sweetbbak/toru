@@ -51,6 +51,7 @@ mv toru "${PREFIX}"
 ```
 
 on Windows
+
 ```sh
 iwr -Uri "https://github.com/sweetbbak/toru/releases/download/v0.1/toru_Windows_x86_64.zip" -OutFile toru_Windows_x86_64.zip
 ```
@@ -64,30 +65,35 @@ iwr -Uri "https://github.com/sweetbbak/toru/releases/download/v0.1/toru_Windows_
 ```sh
 go install github.com/sweetbbak/toru/cmd/toru@latest
 ```
+
 <details closed>
   <summary>Build from source</summary>
 
 using Go is recommended alongside `gup` so that it can be easily updated
+
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 go build -o toru ./cmd/toru
 ```
 
 you can also use the justfile
+
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 just
 ```
 
 or the makefile
+
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 make build
 ```
 
-Using `docker`, `podman` with  the `shell.nix` file on non-nixOS distros
+Using `docker`, `podman` with the `shell.nix` file on non-nixOS distros
 this will automatically pull the correct version of Go and install `just`
 so that building is easy.
+
 ```sh
 git clone https://github.com/sweetbbak/toru.git && cd toru
 # mount the project directory inside the container
@@ -101,6 +107,7 @@ just
 ### Building for different platforms and architectures
 
 Run to find your target architecture and platform:
+
 ```sh
 go tool dist list
 ```
@@ -109,9 +116,11 @@ then use the environment variables `GOOS` and `GOARCH` before using
 the build command.
 
 Example:
+
 ```sh
 GOOS=linux GOARCH=arm64 go build -o toru ./cmd/toru
 ```
+
 _If you do this_ feel free to create an issue for a platform reporting how it went
 So far there is an issue with android and termux as well as arm 6.
 
@@ -119,25 +128,35 @@ So far there is an issue with android and termux as well as arm 6.
 
 if you are on nix or have nix installed you can just use the shell.nix directly and run `just` or `make` or use `go build -o toru ./cmd/toru`.
 
+## Changelog
+
+- added `--proxy` which allows use of nyaa proxy sites and sukebi
+- added the ability to disable ipv6
+- sub-command "run" now accepts a trailing search term argument
+
 ## Examples
 
 Search for an anime:
+
 ```sh
 toru search -i
 toru search ""
 ```
+
 ![example of toru in progress](assets/search.png)
 
 the selected torrent will begin playing and once the video player is closed
 you will have the option to select another episode, make another search query,
 or to exit.
 
-#### *View* the latest anime on nyaa.si in an interactive fzf session
+#### _View_ the latest anime on nyaa.si in an interactive fzf session
+
 ```sh
 toru search --latest
 ```
 
 #### Search for a specific keyword or series
+
 ```sh
 toru search "Akuyaku"
 ```
@@ -162,6 +181,7 @@ toru search --latest --json | jq -r '.[]|.Name,.Magnet'
 ```
 
 #### Open a cached search session from a json file
+
 ```sh
 toru search --json "one piece" > cache.json
 toru search --from-json cacne.json --interactive
@@ -182,6 +202,7 @@ magnet:... [ magnet link here ]
 ```
 
 ### Creating your own CLI tool using toru
+
 ```sh
 # Create a JSON file using toru
 toru search --latest --json > out.json
@@ -194,7 +215,7 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 ```
 
 > [!IMPORTANT]\
-> toru is in a very early development phase! In order to provide a consistent and smooth experience 
+> toru is in a very early development phase! In order to provide a consistent and smooth experience
 > the CLI interface is subject to change. PR's and advice on project sturcture, pkg organization and
 > feedback on the UI of toru is much appreciated.
 >
@@ -203,17 +224,20 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 > Android with termux currently has UDP issues. Idk much about how android works
 
 ## Features
-- [X] Stream anime from torrents
-- [X] add Nyaa.si as a source
+
+- [x] Stream anime from torrents
+- [x] add Nyaa.si as a source
 - [ ] add a generic torrent tracker library for Korean and American movies
 - [ ] package as various formats (AUR, DEB, Flatpak, AppImage, Release binaries)
 - [ ] ensure compatibility across platforms and aim for consistent compatibility (should work but currently untested)
 
 ## Good issues to work on
+
 - [ ] add a package for Arch, Fedora, Nix, Scoop or otherwise
 - [ ] get toru working on Android. (currently an issue with connecting to peers via UDP)
 
 ## Roadmap
+
 - Daemonize into the background and listen for commands on a socket (optional for user, sometimes this is annoying)
 - Simple torrent client features (download|seed|add magnet|stream|search)
 - Look into file and search caching
@@ -222,14 +246,17 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 - Ensure we are not straining or leeching off of the network more than we are giving
 
 ## Contributing
+
 PR's welcome! This project currently uses Golang 1.21.7 along with standard go formatting using `gopls`
 TODO: add a development containerfile and automate building binaries for all platforms
 
 ## Why though?
-Because scraping is annoying af and it constantly breaks. On top of that, *someone* is paying for those servers.
+
+Because scraping is annoying af and it constantly breaks. On top of that, _someone_ is paying for those servers.
 Torrents are more resistant to takedowns and hopefully will have more longevity.
 
 ## Credits
+
 torrenting library:
 ![anacrolix/torrent](https://github.com/anacrolix/torrent)
 
@@ -237,6 +264,7 @@ Nyaa package is modified from here:
 ![Feyko/nyaa-go](https://github.com/Feyko/nyaa-go)
 
 ## Support
+
 Consider creating a PR, taking up a minor issue on the TODO list, leaving an issue to help improve functionality or buy
 me a coffee!
 
