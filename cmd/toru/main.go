@@ -54,18 +54,26 @@ func init() {
 }
 
 func main() {
-	if _, err := parser.Parse(); err != nil {
+	args, err := parser.Parse()
+	if err != nil {
 		switch flagsErr := err.(type) {
 		case flags.ErrorType:
 			if flagsErr == flags.ErrHelp {
 				os.Exit(0)
 			}
 		default:
-			os.Exit(1)
+			log.Fatal(err)
 		}
 	}
 
 	// TODO: func add config parsing here
+
+	var optArg string
+	if len(args) > 0 {
+		optArg = args[0]
+	} else {
+		optArg = ""
+	}
 
 	cl := libtorrent.NewClient(binaryName, options.Port)
 	cl.DisableIPV6 = options.DisableIPV6
@@ -89,7 +97,7 @@ func main() {
 		}
 		os.Exit(0)
 	case "run", "interactive":
-		if err := InteractiveSearch(cl); err != nil {
+		if err := InteractiveSearch(cl, optArg); err != nil {
 			log.Fatal(err)
 		}
 	case "version":

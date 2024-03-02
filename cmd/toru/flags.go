@@ -7,14 +7,10 @@ type Options struct {
 	// verbosity with level
 	Verbose     []bool `short:"v" long:"verbose" description:"Verbose output"`
 	Version     bool   `short:"V" long:"version" description:"display version info and exit"`
-	DisableIPV6 bool   `short:"4" long:"ipv4" description:"use IPV4 instead of IPV6"`
+	DisableIPV6 bool   `short:"4" long:"ipv4"    description:"use IPV4 instead of IPV6"`
 	Player      string `short:"p" long:"player"  description:"set a custom video player. Use {url} as a placeholder if the url is not the last argument in the string"`
 	Port        string `short:"P" long:"port"    description:"set the port that torrents are streamed over"`
-	Proxy       string `short:"x" long:"proxy"       description:"use a proxy URL like nyaa.iss.ink"`
-
-	Args struct {
-		Query string
-	} `positional-args:"yes"`
+	Proxy       string `short:"x" long:"proxy"   description:"use a proxy URL like nyaa.iss.ink"`
 }
 
 // Streaming options
@@ -28,17 +24,18 @@ type Stream struct {
 	// optional magnet link or torrent file as a trailing argument instead of explicitly defined
 	Args struct {
 		Query string
-	} `positional-args:"yes"`
+	} `positional-args:"yes" positional-arg-name:"TORRENT"`
 }
 
 // Downloading options
 type Download struct {
-	Directory string `short:"d" long:"dir" description:"parent directory to download torrents to"`
+	Directory   string `short:"d" long:"dir" description:"parent directory to download torrents to"`
+	TorrentFile string `short:"t" long:"torrent" description:"explicitly define torrent magnet|file|url to download"`
 
 	// magnet link, torrent or torrent file url
 	Args struct {
 		Query string
-	} `positional-args:"yes" required:"yes" description:"magnet link, torrent file, or torrent file URL"`
+	} `positional-args:"yes" positional-arg-name:"TORRENT"`
 }
 
 // Non-interactive CLI search options
@@ -61,5 +58,5 @@ type Search struct {
 	// actual search query, doesn't matter where it is placed and is OPTIONAL
 	Args struct {
 		Query string
-	} `positional-args:"yes"`
+	} `positional-args:"yes" positional-arg-name:"QUERY"`
 }

@@ -95,19 +95,19 @@ func runSearch(cl *libtorrent.Client) error {
 }
 
 // basic search and play
-func InteractiveSearch(cl *libtorrent.Client) error {
+func InteractiveSearch(cl *libtorrent.Client, query string) error {
 	header := cutePrint.Align(lipgloss.Center).Render("Toru, stream anime, no strings attached")
 	fmt.Println(header)
 
 	var s string
 	var err error
-	if options.Args.Query == "" {
+	if query == "" {
 		s, err = Prompt("Search for an anime: ")
 		if err != nil {
 			return err
 		}
 	} else {
-		s = options.Args.Query
+		s = query
 	}
 
 	m, err := search.LatestAnime(s, options.Proxy, 1)
@@ -141,7 +141,7 @@ LOOP:
 	case "select":
 		goto LOOP
 	case "search":
-		if err := InteractiveSearch(cl); err != nil {
+		if err := InteractiveSearch(cl, ""); err != nil {
 			log.Fatal(err)
 		}
 	case "exit":
@@ -175,7 +175,7 @@ LOOP:
 	case "select":
 		goto LOOP
 	case "search":
-		if err := InteractiveSearch(cl); err != nil {
+		if err := InteractiveSearch(cl, ""); err != nil {
 			log.Fatal(err)
 		}
 	case "exit":
