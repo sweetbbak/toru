@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
-	"time"
 
-	"github.com/dustin/go-humanize"
+	"github.com/pterm/pterm"
 	"github.com/sweetbbak/toru/pkg/libtorrent"
 )
 
@@ -19,24 +18,17 @@ func DownloadTorrent(cl *libtorrent.Client) error {
 		return fmt.Errorf("download: missing argument (magnet|torrent|url) OR --torrent flag")
 	}
 
+	success, _ := pterm.DefaultSpinner.Start("getting torrent info")
+
 	t, err := cl.AddTorrent(tfile)
 	if err != nil {
 		return err
 	}
 
+	success.Success("Success!")
+
 	go func() {
-		name := t.Name()
-		fmt.Printf("Downloading: '%s'\n", name)
-		for !t.Complete.Bool() {
-			c := t.BytesCompleted()
-			total := t.Length()
-			s := humanize.Bytes(uint64(c))
-			x := humanize.Bytes(uint64(total))
-			numpeers := len(t.PeerConns())
-			fmt.Printf("\x1b[2K\rDownloaded (%v/%v) from [%v] Peers...", s, x, numpeers)
-			time.Sleep(time.Millisecond * 500)
-		}
-		println("Complete")
+		Progress(t)
 	}()
 
 	t.DownloadAll()

@@ -3,35 +3,69 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
-	"github.com/dustin/go-humanize"
+	"github.com/anacrolix/torrent"
+	"github.com/pterm/pterm"
 	"github.com/sweetbbak/toru/pkg/libtorrent"
 	"github.com/sweetbbak/toru/pkg/player"
 	"github.com/sweetbbak/toru/pkg/search"
 )
 
+func TruncateString(s string, length int) string {
+	var l int
+	var sb strings.Builder
+
+	// early return if string is shorter then requested length
+	if length >= len(s) {
+		return s
+	}
+
+	for _, r := range s {
+		if l <= length {
+			sb.WriteRune(r)
+		} else {
+
+		}
+		l++
+	}
+	return sb.String()
+}
+
+func Progress(t *torrent.Torrent) {
+	title := TruncateString(t.Name(), 33)
+	fmt.Println(title)
+
+	p, _ := pterm.DefaultProgressbar.WithTotal(100).Start()
+
+	for !t.Complete.Bool() {
+		pc := float64(t.BytesCompleted()) / float64(t.Length()) * 100
+		numpeers := len(t.PeerConns())
+		p.Increment().Current = int(pc)
+		p.UpdateTitle(fmt.Sprintf("peers [%v]", numpeers))
+		time.Sleep(time.Millisecond * 50)
+	}
+}
+
 // takes any type of torrent file/url/magnet, adds it to the client and streams it
 func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
+	success, _ := pterm.DefaultSpinner.Start("getting torrent info")
+
 	t, err := cl.AddTorrent(torfile)
 	if err != nil {
 		return "", err
 	}
+
+	success.Success("Success!")
 
 	link := cl.ServeTorrent(t)
 
 	// consider deleting this as it sometimes conflicts with the fzf user interface
 	go func() {
 		for !t.Complete.Bool() {
-			c := t.BytesCompleted()
-			total := t.Length()
-			s := humanize.Bytes(uint64(c))
-			x := humanize.Bytes(uint64(total))
-			numpeers := len(t.PeerConns())
-			fmt.Printf("\x1b[2K\rDownloaded (%v/%v) from [%v] Peers...", s, x, numpeers)
-			time.Sleep(time.Millisecond * 500)
+			Progress(t)
 		}
-		println("Complete")
 	}()
 
 	fmt.Println(link)
