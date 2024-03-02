@@ -54,7 +54,6 @@ func init() {
 	d.Aliases = []string{"dl", "d"}
 	options.Port = "8080"
 
-	fmt.Println(os.Args)
 	if len(os.Args) == 1 {
 		osargs = append(osargs, "run")
 	} else {
