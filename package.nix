@@ -7,8 +7,8 @@ buildGoModule rec {
     src = fetchFromGitHub {
       owner = "sweetbbak";
       repo = "toru";
-      rev = "747deedd9b19e713f81c208686261e4638e8950e";
-      hash = "sha256-iS7M7++r0OejUnqr2st/CXGox1o/DnAQ4w5Kn/nqT7E=";
+      rev = "9dc67d420208bb5f9debd260170d54035242c7ab";
+      hash = "sha256-2Z5agQtF6p21rnAcjsRr+3QOJ0QGveKVH8e9LHpm3ZE=";
     };
 
     # vendorHash = lib.fakeHash;
