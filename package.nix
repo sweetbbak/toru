@@ -7,12 +7,12 @@ buildGoModule rec {
     src = fetchFromGitHub {
       owner = "sweetbbak";
       repo = "toru";
-      rev = "v0.1";
-      hash = "sha256-GiptGi2OZy6eiDa/g8GwPVZpDd8QUxZuzaEy+9J+v9I=";
+      rev = "747deedd9b19e713f81c208686261e4638e8950e";
+      hash = "sha256-iS7M7++r0OejUnqr2st/CXGox1o/DnAQ4w5Kn/nqT7E=";
     };
 
     # vendorHash = lib.fakeHash;
-    vendorHash = "sha256-wbXpWyOLB5CwnzvRuM8BvlO5BK+AY4uQdGkV151DwvA=";
+    vendorHash = "sha256-alC4/2wTbjJYWGzTDTgQweOicN3xSqfnncok/j16+0E=";
 
     CGO_ENABLED = 1;
     ldflags = [ "-s" "-w" ];
