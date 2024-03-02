@@ -9,16 +9,24 @@ import (
 )
 
 func DownloadTorrent(cl *libtorrent.Client) error {
-	if download.Args.Query == "" {
-		return fmt.Errorf("download: missing argument (magnet|torrent|url)")
+	var tfile string
+
+	if download.TorrentFile != "" {
+		tfile = download.TorrentFile
+	} else if download.Args.Query != "" {
+		tfile = download.Args.Query
+	} else {
+		return fmt.Errorf("download: missing argument (magnet|torrent|url) OR --torrent flag")
 	}
 
-	t, err := cl.AddTorrent(download.Args.Query)
+	t, err := cl.AddTorrent(tfile)
 	if err != nil {
 		return err
 	}
 
 	go func() {
+		name := t.Name()
+		fmt.Printf("Downloading: '%s'\n", name)
 		for !t.Complete.Bool() {
 			c := t.BytesCompleted()
 			total := t.Length()
@@ -32,6 +40,9 @@ func DownloadTorrent(cl *libtorrent.Client) error {
 	}()
 
 	t.DownloadAll()
-	cl.TorrentClient.WaitAll()
-	return nil
+	if cl.TorrentClient.WaitAll() {
+		return nil
+	} else {
+		return fmt.Errorf("Unable to completely download torrent: %s", t.Name())
+	}
 }
