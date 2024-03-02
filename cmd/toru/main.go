@@ -17,12 +17,14 @@ const (
 
 var (
 	options    Options
+	runner     Run
 	streaming  Stream
 	searchopts Search
 	download   Download
 )
 
 var parser = flags.NewParser(&options, flags.Default)
+var osargs []string
 
 func init() {
 	s, err := parser.AddCommand("stream", "stream torrents", "stream torrents", &streaming)
@@ -33,7 +35,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	r, err := parser.AddCommand("run", "run an interactive terminal session", "run an interactive terminal session with toru", &options)
+	r, err := parser.AddCommand("run", "run an interactive terminal session", "run an interactive terminal session with toru", &runner)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,22 +53,24 @@ func init() {
 	r.Aliases = []string{"r"}
 	d.Aliases = []string{"dl", "d"}
 	options.Port = "8080"
+
+	fmt.Println(os.Args)
+	if len(os.Args) == 1 {
+		osargs = append(osargs, "run")
+	} else {
+		osargs = os.Args[1:]
+	}
 }
 
 func main() {
-	args, err := parser.Parse()
+	args, err := parser.ParseArgs(osargs)
 	if err != nil {
-		switch flagsErr := err.(type) {
-		case flags.ErrorType:
-			if flagsErr == flags.ErrHelp {
-				os.Exit(0)
-			}
-		default:
+		if flags.WroteHelp(err) {
+			os.Exit(0)
+		} else {
 			log.Fatal(err)
 		}
 	}
-
-	// TODO: func add config parsing here
 
 	var optArg string
 	if len(args) > 0 {

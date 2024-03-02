@@ -13,6 +13,9 @@ type Options struct {
 	Proxy       string `short:"x" long:"proxy"   description:"use a proxy URL like nyaa.iss.ink"`
 }
 
+type Run struct {
+}
+
 // Streaming options
 type Stream struct {
 	Magnet      string         `short:"m" long:"magnet"    description:"stream directly from the provided torrent magnet link"`
