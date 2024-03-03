@@ -1,24 +1,23 @@
-{ lib, fetchFromGitHub, buildGoModule }:
-
+{
+  lib,
+  fetchFromGitHub,
+  buildGoModule,
+}:
 buildGoModule rec {
     pname = "toru";
     version = "0.1";
 
-    src = fetchFromGitHub {
-      owner = "sweetbbak";
-      repo = "toru";
-      rev = "9dc67d420208bb5f9debd260170d54035242c7ab";
-      hash = "sha256-2Z5agQtF6p21rnAcjsRr+3QOJ0QGveKVH8e9LHpm3ZE=";
-    };
+  src = fetchFromGitHub {
+    owner = "sweetbbak";
+    repo = "toru";
+    rev = "c5f6134b42d6dc8fd3f52e598f6fc6b1eae74888";
+    hash = "sha256-6jZnuE2xNF0lrYVjBXTBGQCkT0vxPzHlmbnRDLPcglE=";
+  };
 
-    # vendorHash = lib.fakeHash;
-    vendorHash = "sha256-alC4/2wTbjJYWGzTDTgQweOicN3xSqfnncok/j16+0E=";
-
-    CGO_ENABLED = 1;
-    ldflags = [ "-s" "-w" ];
-
-    tags = [ "torrent" "bittorrent" "anime" ];
-    proxyVendor = true;
+  vendorHash = "sha256-bmG2qBlyN6aYdWvplXClylwCk2pDfr30w0ztgUXP71g=";
+  CGO_ENABLED = 0;
+  ldflags = ["-s" "-w"];
+  tags = ["torrent" "bittorrent" "anime"];
 
     buildPhase = ''
         go mod vendor
