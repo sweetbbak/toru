@@ -4,8 +4,8 @@
   buildGoModule,
 }:
 buildGoModule rec {
-    pname = "toru";
-    version = "0.1";
+  pname = "toru";
+  version = "0.1";
 
   src = fetchFromGitHub {
     owner = "sweetbbak";
@@ -19,21 +19,11 @@ buildGoModule rec {
   ldflags = ["-s" "-w"];
   tags = ["torrent" "bittorrent" "anime"];
 
-    buildPhase = ''
-        go mod vendor
-        go build -o toru ./cmd/toru
-    '';
-
-    installPhase = ''
-        mkdir -p $out/bin
-        mv toru $out/bin
-    '';
-
-    meta = with lib; {
-        homepage = "https://github.com/sweetbbak/toru";
-        description = "Stream anime from the command line with the power of torrents";
-        license = licenses.mit;
-        maintainers = with maintainers; [ sweetbbak ];
-        mainProgram = "toru";
-    };
+  meta = with lib; {
+    homepage = "https://github.com/sweetbbak/toru";
+    description = "Bittorrent streaming CLI tool. Stream anime torrents, real-time with no waiting for downloads";
+    license = licenses.mit;
+    maintainers = with maintainers; [sweetbbak];
+    mainProgram = "toru";
+  };
 }
