@@ -24,6 +24,8 @@ type Client struct {
 	Seed bool
 	// Port to stream torrents on
 	Port string
+	// Port to stream torrents on
+	TorrentPort int
 	// Default torrent client options
 	TorrentClient *torrent.Client
 	// server
@@ -39,7 +41,7 @@ func NewClient(name string, port string) *Client {
 	return &Client{
 		Name: name,
 		Port: port,
-		Seed: true,
+		Seed: false,
 	}
 }
 
@@ -54,10 +56,11 @@ func (c *Client) Init() error {
 	cfg.DisableIPv6 = c.DisableIPV6
 
 	// sanity check
-	if c.Port == "" {
-		c.Port = "8080"
+	if c.TorrentPort == -1 {
+		c.TorrentPort = 42069
 	}
 
+	cfg.ListenPort = c.TorrentPort
 	c.DataDir = s
 	cfg.DefaultStorage = storage.NewFileByInfoHash(c.DataDir)
 
