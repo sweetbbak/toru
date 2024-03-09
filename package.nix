@@ -10,11 +10,12 @@ buildGoModule rec {
   src = fetchFromGitHub {
     owner = "sweetbbak";
     repo = "toru";
-    rev = "c5f6134b42d6dc8fd3f52e598f6fc6b1eae74888";
-    hash = "sha256-6jZnuE2xNF0lrYVjBXTBGQCkT0vxPzHlmbnRDLPcglE=";
+    rev = "3753b62a6d22c2e0389f569d1a0c2130dca97334";
+    hash = "sha256-ypwXDvvWEm6neOVd2BmwBKdZ/dlVClhvnF03HHeyM48=";
   };
 
   vendorHash = "sha256-bmG2qBlyN6aYdWvplXClylwCk2pDfr30w0ztgUXP71g=";
+
   CGO_ENABLED = 0;
   ldflags = ["-s" "-w"];
   tags = ["torrent" "bittorrent" "anime"];
