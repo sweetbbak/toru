@@ -59,13 +59,12 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 	}
 	success.Success("Success!")
 
-
 	torrentFiles := len(t.Files())
-	var episode int 
+	var episode int
 
 	if torrentFiles != 1 {
 		ep, _ := Prompt("Choose an episode")
-		episode, err = strconv.Atoi(ep) 
+		episode, err = strconv.Atoi(ep)
 		if err != nil {
 			return "", errors.New("episode must be numeric")
 		}
@@ -73,7 +72,7 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 			return "", errors.New("episode doesn't exist")
 		}
 	}
-	
+
 	link := cl.ServeTorrent(t, episode)
 
 	// consider deleting this as it sometimes conflicts with the fzf user interface

@@ -22,10 +22,6 @@ func runSearch(cl *libtorrent.Client) error {
 		return nil
 	}
 
-	// if searchopts.Interactive {
-	// 	return InteractiveSearch(cl)
-	// }
-
 	// build the query
 	if searchopts.Category != "" {
 		s.Category = searchopts.Category
