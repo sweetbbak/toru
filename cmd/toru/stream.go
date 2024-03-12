@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -51,15 +53,28 @@ func Progress(t *torrent.Torrent) {
 // takes any type of torrent file/url/magnet, adds it to the client and streams it
 func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 	success, _ := pterm.DefaultSpinner.Start("getting torrent info")
-
 	t, err := cl.AddTorrent(torfile)
 	if err != nil {
 		return "", err
 	}
-
 	success.Success("Success!")
 
-	link := cl.ServeTorrent(t)
+
+	torrentFiles := len(t.Files())
+	var episode int 
+
+	if torrentFiles != 1 {
+		ep, _ := Prompt("Choose an episode")
+		episode, err = strconv.Atoi(ep) 
+		if err != nil {
+			return "", errors.New("episode must be numeric")
+		}
+		if episode > torrentFiles {
+			return "", errors.New("episode doesn't exist")
+		}
+	}
+	
+	link := cl.ServeTorrent(t, episode)
 
 	// consider deleting this as it sometimes conflicts with the fzf user interface
 	go func() {
@@ -68,7 +83,6 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 		}
 	}()
 
-	fmt.Println(link)
 	return link, nil
 }
 

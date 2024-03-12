@@ -2,12 +2,14 @@ package libtorrent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -85,34 +87,42 @@ func (c *Client) DownloadTorrent(torrent string) error {
 
 func (c *Client) ServeTorrents(ctx context.Context, torrents []*torrent.Torrent) {
 	for _, t := range torrents {
-		link := c.ServeTorrent(t)
+		// it doesn't matter what episode included here, so it's just 0
+		link := c.ServeTorrent(t, 0)
 		fmt.Println(link)
 	}
 }
 
-func GetVideoFile(t *torrent.Torrent) *torrent.File {
-	for _, f := range t.Files() {
-		ext := path.Ext(f.Path())
-		switch ext {
-		case ".mp4", ".mkv", ".avi", ".avif", ".av1", ".mov", ".flv", ".f4v", ".webm", ".wmv", ".mpeg", ".mpg", ".mlv", ".hevc", ".flac", ".flic":
-			return f
-		default:
-			continue
-		}
+func GetVideoFile(t *torrent.Torrent, episode int) (*torrent.File, error) {
+	f := t.Files()[episode]
+	ext := path.Ext(f.Path())
+	switch ext {
+	case ".mp4", ".mkv", ".avi", ".avif", ".av1", ".mov", ".flv", ".f4v", ".webm", ".wmv", ".mpeg", ".mpg", ".mlv", ".hevc", ".flac", ".flic":
+		return f, nil
+	default:
+		return f, errors.New("server handler: Not supported extension")
 	}
-	return nil
 }
 
 // handler for ServeTorrent
 func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	ts := c.TorrentClient.Torrents()
-	ep := r.URL.Query().Get("ep")
-	// idk why but this is always mangled af
-	ep = strings.TrimSpace(ep)
-	ep = strings.ReplaceAll(ep, "\n", "")
+	queries := r.URL.Query()
+	// get hash of torrent
+	hash := queries.Get("hash")
+	// get episode
+	ep, err := strconv.Atoi(queries.Get("ep"))
+	if err != nil {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
 
-	if ep == "" {
-		log.Println("server handler: Episode query is empty")
+	// idk why but this is always mangled af
+	hash = strings.TrimSpace(hash)
+	hash = strings.ReplaceAll(hash, "\n", "")
+
+	if hash == "" {
+		log.Println("server handler: Hash query is empty")
 		return
 	}
 
@@ -120,8 +130,17 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 		<-ff.GotInfo()
 		ih := ff.InfoHash().String()
 
-		if ih == ep {
-			f := GetVideoFile(ff)
+		if ih == hash {
+			if ep == 0 {
+				ep = 1
+			}
+
+			f, err := GetVideoFile(ff, ep-1)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+
 			w.Header().Set("Content-Type", "video/mp4")
 			http.ServeContent(w, r, f.DisplayPath(), time.Unix(f.Torrent().Metainfo().CreationDate, 0), f.NewReader())
 		}
@@ -148,16 +167,17 @@ func (c *Client) StartServer() {
 
 // Generate a link that can be used with the default clients server to play a torrent
 // that is already loaded into the client
-func (c *Client) ServeTorrent(t *torrent.Torrent) string {
+func (c *Client) ServeTorrent(t *torrent.Torrent, episode int) string {
 	mh := t.InfoHash().String()
-	return fmt.Sprintf("http://localhost:%s/stream?ep=%s", c.Port, mh)
+	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&ep=%d", c.Port, mh, episode)
 }
 
 // old version of servetorrent, only works once lol. DOnt use, delete soon
 // WARN do not use this | do not use this | do not fucking use this
 func (c *Client) ServeSingleTorrent(ctx context.Context, t *torrent.Torrent) string {
 	var link string
-	f := GetVideoFile(t)
+	// if you tell don't use, well, I include 0 here as episode argument :)
+	f, _ := GetVideoFile(t, 0)
 	if f == nil {
 		log.Fatal("Could not find video file")
 	}
