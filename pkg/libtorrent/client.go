@@ -172,44 +172,6 @@ func (c *Client) ServeTorrent(t *torrent.Torrent, episode int) string {
 	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&ep=%d", c.Port, mh, episode)
 }
 
-// old version of servetorrent, only works once lol. DOnt use, delete soon
-// WARN do not use this | do not use this | do not fucking use this
-func (c *Client) ServeSingleTorrent(ctx context.Context, t *torrent.Torrent) string {
-	var link string
-	// if you tell don't use, well, I include 0 here as episode argument :)
-	f, _ := GetVideoFile(t, 0)
-	if f == nil {
-		log.Fatal("Could not find video file")
-	}
-
-	fname := f.DisplayPath()
-	// fname := f.Path()
-	fname = escapeUrl(fname)
-
-	http.HandleFunc("/"+fname, func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(f.Torrent())
-		w.Header().Set("Content-Type", "video/mp4")
-		http.ServeContent(w, r, f.DisplayPath(), time.Unix(f.Torrent().Metainfo().CreationDate, 0), f.NewReader())
-	})
-
-	c.srv = &http.Server{Addr: c.Port}
-	server := c.srv
-
-	go func() {
-		if err := server.ListenAndServe(); err != nil {
-			if err == http.ErrServerClosed {
-				return
-			} else {
-				log.Fatal(err)
-			}
-		}
-	}()
-
-	// print the link to the video
-	link = fmt.Sprintf("http://localhost:%s/stream?ep=%s\n", c.Port, fname)
-	return link
-}
-
 // returns a slice of loaded torrents or nil
 func (c *Client) ShowTorrents() []*torrent.Torrent {
 	return c.TorrentClient.Torrents()
