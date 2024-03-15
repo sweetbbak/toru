@@ -171,6 +171,16 @@ toru download --magnet 'magnet:?xt=urn:btih:1...announce'
 All of the above outputs a link that you can use to stream the torrent `'http://localhost:8080/stream?ep=torrent_info_hash'`
 you can treat this link like any other http link and stream it with `mpv` or `vlc`, download it, use `yt-dlp`, or open it in the browser etc...
 
+#### Use a proxy Nyaa site
+
+this can be helpful for geoblocking and for browsing "special" Nyaa
+sites
+
+```sh
+toru search --proxy="https://sukebei.nyaa.si" -i
+toru search --proxy="https://nyaa.ink.iss" -i
+```
+
 ### Handling input and output
 
 You can use toru to search for anime and other media types and then output the results in multiple formats.
