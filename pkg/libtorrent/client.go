@@ -131,11 +131,7 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 		ih := ff.InfoHash().String()
 
 		if ih == hash {
-			if ep == 0 {
-				ep = 1
-			}
-
-			f, err := GetVideoFile(ff, ep-1)
+			f, err := GetVideoFile(ff, ep)
 			if err != nil {
 				log.Println(err)
 				return

@@ -59,16 +59,20 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 	}
 	success.Success("Success!")
 
-	torrentFiles := len(t.Files())
+	torrentFiles := t.Files()
 	var episode int
 
-	if torrentFiles != 1 {
-		ep, _ := Prompt("Choose an episode")
+	if len(torrentFiles) > 1 {
+		for x := range torrentFiles {
+			fmt.Println(x, torrentFiles[x].DisplayPath())
+		}
+
+		ep, _ := Prompt("Choose an episode from list")
 		episode, err = strconv.Atoi(ep)
 		if err != nil {
 			return "", errors.New("episode must be numeric")
 		}
-		if episode > torrentFiles {
+		if episode >= len(torrentFiles) {
 			return "", errors.New("episode doesn't exist")
 		}
 	}
