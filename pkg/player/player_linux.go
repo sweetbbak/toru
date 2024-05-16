@@ -1,4 +1,3 @@
-//go:build linux && !android
 // +build linux,!android
 
 package player
