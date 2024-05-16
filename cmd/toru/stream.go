@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path"
 	"strings"
 	"time"
 
@@ -49,21 +50,22 @@ func Progress(t *torrent.Torrent) {
 }
 
 // takes any type of torrent file/url/magnet, adds it to the client and streams it
-func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
+func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, error) {
 	success, _ := pterm.DefaultSpinner.Start("getting torrent info")
 	t, err := cl.AddTorrent(torfile)
 	if err != nil {
-		return "", err
+		return player.MediaEntry{}, err
 	}
 	success.Success("Success!")
 
-	torrentFiles := len(t.Files())
-	var episode int
+	files := t.Files()
+	filesCount := len(files)
+	episode := 1
 
-	if torrentFiles != 1 {
-		episode, err = PromptEpisodeInRangeWithDefaultToMax(1, torrentFiles)
+	if filesCount != 1 {
+		episode, err = PromptEpisodeInRangeWithDefaultToMax(1, filesCount)
 		if err != nil {
-			return "", err
+			return player.MediaEntry{}, err
 		}
 	}
 
@@ -76,7 +78,9 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 		}
 	}()
 
-	return link, nil
+	filename := path.Base(files[episode-1].Path())
+
+	return player.MediaEntry{Title: filename, URL: link}, nil
 }
 
 // play a single torrent from a provided magnet, torrent or torrent URL
