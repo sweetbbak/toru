@@ -1,10 +1,8 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -63,13 +61,9 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (string, error) {
 	var episode int
 
 	if torrentFiles != 1 {
-		ep, _ := Prompt("Choose an episode")
-		episode, err = strconv.Atoi(ep)
+		episode, err = PromptEpisodeInRangeWithDefaultToMax(1, torrentFiles)
 		if err != nil {
-			return "", errors.New("episode must be numeric")
-		}
-		if episode > torrentFiles {
-			return "", errors.New("episode doesn't exist")
+			return "", err
 		}
 	}
 
