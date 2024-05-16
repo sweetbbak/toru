@@ -1,4 +1,4 @@
-//go:build (linux || darwin) && !android
+//go:build (linux || darwin || windows) && !android
 
 package player
 
