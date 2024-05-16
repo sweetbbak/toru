@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -43,6 +45,27 @@ func Prompt(prompt string) (string, error) {
 
 	fmt.Println(style.Render(val))
 	return val, nil
+}
+
+func PromptEpisodeInRangeWithDefaultToMax(min int, max int) (int, error) {
+	val, err := Prompt(fmt.Sprintf("Choose an episode %d-%d", min, max))
+	if err != nil {
+		return -1, err
+	}
+
+	if val == "" {
+		return max, nil
+	}
+
+	episode, err := strconv.Atoi(val)
+	if err != nil {
+		return -1, errors.New("episode must be numeric")
+	}
+	if episode > max || episode < min {
+		return -1, errors.New("episode doesn't exist")
+	}
+
+	return episode, nil
 }
 
 func prettyPrint(str string) {
