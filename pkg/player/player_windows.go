@@ -7,7 +7,7 @@ import (
 
 // Open the given stream in a GenericPlayer.
 func (p GenericPlayer) Open(media MediaEntry) (*os.Process, error) {
-	cmd := exec.Command(p.Name, expandArgs(p.Args, media)...)
+	cmd := exec.Command(p.Name, p.expandArgs(media)...)
 
 	err := cmd.Start()
 	if err != nil {

@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+
+	"github.com/sweetbbak/toru/pkg/player/mpv"
 )
 
 var desktopPlayers = []GenericPlayer{
-	{Name: "mpv", Args: []string{"--title={{.Title}}", "{{.URL}}"}},
+	{Name: "mpv", Args: []string{"--script={{GetHelperScriptPath}}", "--script-opts=external-title={{.Title}}", "{{.URL}}"}, GetHelperScriptPath: mpv.GetScriptPath},
 	{Name: "vlc", Args: []string{"{{.URL}}"}},
 	{Name: "mplayer", Args: []string{"{{.URL}}"}},
 	{Name: "iina", Args: []string{"--no-stdin", "--keep-running", "{{.URL}}"}},

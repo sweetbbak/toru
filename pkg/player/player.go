@@ -9,6 +9,8 @@ import (
 type GenericPlayer struct {
 	Name string
 	Args []string
+
+	GetHelperScriptPath func() string
 }
 
 // Player opens a stream URL in a video player.
@@ -21,13 +23,17 @@ type MediaEntry struct {
 	URL   string
 }
 
-func expandArgs(args []string, data any) ([]string) {
+func (p *GenericPlayer) expandArgs(data MediaEntry) ([]string) {
 	var res []string
 	var buffer bytes.Buffer
 
-	for _, u := range args {
-		temp, _ := template.New("").Parse(u)
+	for _, u := range p.Args {
+		temp := template.New("")
+		temp.Funcs(template.FuncMap{"GetHelperScriptPath": p.GetHelperScriptPath})
+		temp, _ = temp.Parse(u)
+
 		temp.Execute(&buffer, data)
+
 		res = append(res, buffer.String())
 		buffer.Reset()
 	}

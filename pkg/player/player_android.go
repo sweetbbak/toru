@@ -15,7 +15,7 @@ var androidPlayers = []GenericPlayer{
 
 // Open the given stream in a GenericPlayer.
 func (p GenericPlayer) Open(media MediaEntry) (*os.Process, error) {
-	cmd := exec.Command(p.Args[0], expandArgs(p.Args[1:], media)...)
+	cmd := exec.Command(p.Args[0], p.expandArgs(media)[1:]...)
 	err := cmd.Start()
 	if err != nil {
 		return nil, err
