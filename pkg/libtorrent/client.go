@@ -142,7 +142,7 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	for _, ff := range ts {
 		<-ff.GotInfo()
 		ih := ff.InfoHash().String()
-		
+
 		if ih == hash {
 			f, err := GetVideoFile(ff, ep)
 			if err != nil {
