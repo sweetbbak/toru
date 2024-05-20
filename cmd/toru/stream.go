@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path"
 	"strings"
 	"time"
 
@@ -78,9 +77,9 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, er
 		}
 	}()
 
-	filename := path.Base(files[episode-1].Path())
+	p, _ := libtorrent.GetVideoFile(t, episode)
 
-	return player.MediaEntry{Title: filename, URL: link}, nil
+	return player.MediaEntry{Title: p.DisplayPath(), URL: link}, nil
 }
 
 // play a single torrent from a provided magnet, torrent or torrent URL

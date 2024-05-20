@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -93,8 +94,20 @@ func (c *Client) ServeTorrents(ctx context.Context, torrents []*torrent.Torrent)
 	}
 }
 
+func getSortedFilesList(t *torrent.Torrent) []*torrent.File {
+	// Almost zero copy cause pointers used
+	files := make([]*torrent.File, len(t.Files()))
+	copy(files, t.Files())
+
+	slices.SortFunc(files, func(a, b *torrent.File) int {
+		return strings.Compare(a.Path(), b.Path())
+	})
+
+	return files
+}
+
 func GetVideoFile(t *torrent.Torrent, episode int) (*torrent.File, error) {
-	f := t.Files()[episode]
+	f := getSortedFilesList(t)[episode-1]
 	ext := path.Ext(f.Path())
 	switch ext {
 	case ".mp4", ".mkv", ".avi", ".avif", ".av1", ".mov", ".flv", ".f4v", ".webm", ".wmv", ".mpeg", ".mpg", ".mlv", ".hevc", ".flac", ".flic":
@@ -131,11 +144,7 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 		ih := ff.InfoHash().String()
 
 		if ih == hash {
-			if ep == 0 {
-				ep = 1
-			}
-
-			f, err := GetVideoFile(ff, ep-1)
+			f, err := GetVideoFile(ff, ep)
 			if err != nil {
 				log.Println(err)
 				return
