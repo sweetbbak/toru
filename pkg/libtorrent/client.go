@@ -1,7 +1,6 @@
 package libtorrent
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -74,6 +73,7 @@ func (c *Client) Init() error {
 	return nil
 }
 
+// add a torrent and mark it entirely for download
 func (c *Client) DownloadTorrent(torrent string) error {
 	t, err := c.AddTorrent(torrent)
 	if err != nil {
@@ -83,18 +83,18 @@ func (c *Client) DownloadTorrent(torrent string) error {
 	return nil
 }
 
-func GetVideoFile(t *torrent.Torrent, episode int) (*torrent.File, error) {
-	f := t.Files()[episode]
+// Is torrent file a video
+func IsVideoFile(f *torrent.File) bool {
 	ext := path.Ext(f.Path())
 	switch ext {
 	case ".mp4", ".mkv", ".avi", ".avif", ".av1", ".mov", ".flv", ".f4v", ".webm", ".wmv", ".mpeg", ".mpg", ".mlv", ".hevc", ".flac", ".flic":
-		return f, nil
+		return true
 	default:
-		return f, errors.New("server handler: Not supported extension")
+		return false
 	}
 }
 
-// handler for ServeTorrent
+// HTTP handler for ServeTorrent allowing for query by hash for the torrent and filepath for the subsequent video
 func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	ts := c.TorrentClient.Torrents()
 	queries := r.URL.Query()
@@ -164,7 +164,7 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	http.ServeContent(w, r, targetFile.DisplayPath(), time.Unix(targetFile.Torrent().Metainfo().CreationDate, 0), targetFile.NewReader())
 }
 
-// start the server in the background
+// start the server in the background, only done once internally.
 func (c *Client) StartServer() {
 	// :8080 for localhost:8080/
 	port := fmt.Sprintf(":%s", c.Port)
@@ -182,6 +182,8 @@ func (c *Client) StartServer() {
 	}()
 }
 
+// Generate a link that can be used with the default clients server to play a torrent
+// that is already loaded into the client and allow for the specification of a file to play by filepath
 func (c *Client) ServeTorrentEpisode(t *torrent.Torrent, filePath string) string {
 	mh := t.InfoHash().String()
 	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&filepath=%s", c.Port, mh, filePath)
@@ -199,7 +201,7 @@ func (c *Client) ShowTorrents() []*torrent.Torrent {
 	return c.TorrentClient.Torrents()
 }
 
-// generic add torrent function
+// generic add torrent function, takes magnets, URLs to torrent files and torrent files.
 func (c *Client) AddTorrent(tor string) (*torrent.Torrent, error) {
 	if strings.HasPrefix(tor, "magnet") {
 		return c.AddMagnet(tor)
