@@ -3,18 +3,18 @@
   fetchFromGitHub,
   buildGoModule,
 }:
-buildGoModule rec {
+buildGoModule {
   pname = "toru";
-  version = "0.1";
+  version = "0.2";
 
   src = fetchFromGitHub {
     owner = "sweetbbak";
     repo = "toru";
-    rev = "3753b62a6d22c2e0389f569d1a0c2130dca97334";
-    hash = "sha256-ypwXDvvWEm6neOVd2BmwBKdZ/dlVClhvnF03HHeyM48=";
+    rev = "cf1729a116927b5ffc28eb99360628a27097fbe6";
+    hash = "sha256-Na4JJ4RvghY/cx1H6XwMoP6963hobZyvZqhoKsGPDxs=";
   };
 
-  vendorHash = "sha256-bmG2qBlyN6aYdWvplXClylwCk2pDfr30w0ztgUXP71g=";
+  vendorHash = "sha256-04fHwblTspzecnTizUlFqLwtcnBsHrFRvLX1eSXztRI=";
 
   CGO_ENABLED = 0;
   ldflags = ["-s" "-w"];
