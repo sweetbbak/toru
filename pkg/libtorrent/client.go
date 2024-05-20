@@ -1,16 +1,12 @@
 package libtorrent
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path"
-	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -77,6 +73,7 @@ func (c *Client) Init() error {
 	return nil
 }
 
+// add a torrent and mark it entirely for download
 func (c *Client) DownloadTorrent(torrent string) error {
 	t, err := c.AddTorrent(torrent)
 	if err != nil {
@@ -86,77 +83,88 @@ func (c *Client) DownloadTorrent(torrent string) error {
 	return nil
 }
 
-func (c *Client) ServeTorrents(ctx context.Context, torrents []*torrent.Torrent) {
-	for _, t := range torrents {
-		// it doesn't matter what episode included here, so it's just 0
-		link := c.ServeTorrent(t, 0)
-		fmt.Println(link)
-	}
-}
-
-func getSortedFilesList(t *torrent.Torrent) []*torrent.File {
-	// Almost zero copy cause pointers used
-	files := make([]*torrent.File, len(t.Files()))
-	copy(files, t.Files())
-
-	slices.SortFunc(files, func(a, b *torrent.File) int {
-		return strings.Compare(a.Path(), b.Path())
-	})
-
-	return files
-}
-
-func GetVideoFile(t *torrent.Torrent, episode int) (*torrent.File, error) {
-	f := getSortedFilesList(t)[episode-1]
+// Is torrent file a video
+func IsVideoFile(f *torrent.File) bool {
 	ext := path.Ext(f.Path())
 	switch ext {
 	case ".mp4", ".mkv", ".avi", ".avif", ".av1", ".mov", ".flv", ".f4v", ".webm", ".wmv", ".mpeg", ".mpg", ".mlv", ".hevc", ".flac", ".flic":
-		return f, nil
+		return true
 	default:
-		return f, errors.New("server handler: Not supported extension")
+		return false
 	}
 }
 
-// handler for ServeTorrent
+// HTTP handler for ServeTorrent allowing for query by hash for the torrent and filepath for the subsequent video
 func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	ts := c.TorrentClient.Torrents()
 	queries := r.URL.Query()
 	// get hash of torrent
 	hash := queries.Get("hash")
-	// get episode
-	ep, err := strconv.Atoi(queries.Get("ep"))
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
+
+	// check if the user requested a specific episode
+	fpath := queries.Get("filepath")
 
 	// idk why but this is always mangled af
 	hash = strings.TrimSpace(hash)
 	hash = strings.ReplaceAll(hash, "\n", "")
 
+	fpath = strings.TrimSpace(fpath)
+	fpath = strings.ReplaceAll(fpath, "\n", "")
+
 	if hash == "" {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 		log.Println("server handler: Hash query is empty")
 		return
 	}
 
+	var targetTorrent *torrent.Torrent
+
 	for _, ff := range ts {
 		<-ff.GotInfo()
 		ih := ff.InfoHash().String()
-
 		if ih == hash {
-			f, err := GetVideoFile(ff, ep)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			w.Header().Set("Content-Type", "video/mp4")
-			http.ServeContent(w, r, f.DisplayPath(), time.Unix(f.Torrent().Metainfo().CreationDate, 0), f.NewReader())
+			targetTorrent = ff
 		}
 	}
+
+	if targetTorrent == nil {
+		http.Error(w, http.StatusText(400), http.StatusInternalServerError)
+		log.Println("server handler: couldnt find torrent by infohash")
+		return
+	}
+
+	// file count
+	fileCount := len(targetTorrent.Files())
+
+	// the file we will serve after checking user input
+	var targetFile *torrent.File
+
+	if fileCount == 1 {
+		// TODO: do bounds checking and make sure the file isn't a txt file or something
+		targetFile = targetTorrent.Files()[0]
+	}
+
+	if fpath != "" && fileCount > 1 {
+		for _, f := range targetTorrent.Files() {
+			// TODO: I have a feeling this will be problematic with weird characters and stuff, handle that.
+			if f.DisplayPath() == fpath {
+				targetFile = f
+				break
+			}
+		}
+	}
+
+	if targetFile == nil {
+		http.Error(w, http.StatusText(400), http.StatusInternalServerError)
+		log.Println("server handler: couldnt find torrent file requested")
+		return
+	}
+
+	w.Header().Set("Content-Type", "video/mp4")
+	http.ServeContent(w, r, targetFile.DisplayPath(), time.Unix(targetFile.Torrent().Metainfo().CreationDate, 0), targetFile.NewReader())
 }
 
-// start the server in the background
+// start the server in the background, only done once internally.
 func (c *Client) StartServer() {
 	// :8080 for localhost:8080/
 	port := fmt.Sprintf(":%s", c.Port)
@@ -175,10 +183,17 @@ func (c *Client) StartServer() {
 }
 
 // Generate a link that can be used with the default clients server to play a torrent
-// that is already loaded into the client
-func (c *Client) ServeTorrent(t *torrent.Torrent, episode int) string {
+// that is already loaded into the client and allow for the specification of a file to play by filepath
+func (c *Client) ServeTorrentEpisode(t *torrent.Torrent, filePath string) string {
 	mh := t.InfoHash().String()
-	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&ep=%d", c.Port, mh, episode)
+	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&filepath=%s", c.Port, mh, filePath)
+}
+
+// Generate a link that can be used with the default clients server to play a torrent
+// that is already loaded into the client
+func (c *Client) ServeTorrent(t *torrent.Torrent) string {
+	mh := t.InfoHash().String()
+	return fmt.Sprintf("http://localhost:%s/stream?hash=%s", c.Port, mh)
 }
 
 // returns a slice of loaded torrents or nil
@@ -186,7 +201,7 @@ func (c *Client) ShowTorrents() []*torrent.Torrent {
 	return c.TorrentClient.Torrents()
 }
 
-// generic add torrent function
+// generic add torrent function, takes magnets, URLs to torrent files and torrent files.
 func (c *Client) AddTorrent(tor string) (*torrent.Torrent, error) {
 	if strings.HasPrefix(tor, "magnet") {
 		return c.AddMagnet(tor)

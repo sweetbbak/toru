@@ -14,6 +14,8 @@ type Options struct {
 	TorrentPort int    `short:"T" long:"torrent-port" description:"set the port that the torrent client will use to talk to peers"`
 }
 
+// this only exists because the go-flags pkg doesn't allow no subcommands
+// TODO: consider using Viper or Cobra
 type Run struct {
 }
 
@@ -45,7 +47,7 @@ type Download struct {
 // Non-interactive CLI search options
 type Search struct {
 	SortBy      string `short:"b" long:"sort-by"     description:"sort results by a category [size|date|seeders|leechers|downloads]"`
-	SortOrder   string `short:"o" long:"sort-order"  description:"sort by ascending or descending: options [asc|desc]"               choice:"asc"`
+	SortOrder   string `short:"o" long:"sort-order"  description:"sort by ascending or descending: options [asc|desc]" choice:"asc"`
 	User        string `short:"u" long:"user"        description:"search for content by a user"`
 	Filter      string `short:"f" long:"filter"      description:"filter content. Options: [no-remakes|trusted]"`
 	Page        uint   `short:"p" long:"page"        description:"which results page to display [default 1]"`
@@ -53,7 +55,7 @@ type Search struct {
 	Download    bool   `short:"d" long:"download"    description:"download selected torrents after search"`
 	Multi       bool   `short:"m" long:"multi"       description:"choose multiple torrents to queue for downloading or streaming"`
 	Latest      bool   `short:"n" long:"latest"      description:"view the latest anime"`
-	Category    string `short:"c" long:"category"    description:"f"`
+	Category    string `short:"c" long:"category"    description:"search torrents by a category: run [toru search --list] to see categories"`
 	List        bool   `short:"l" long:"list"        description:"list all accepted arguments for searching by categories"`
 	Json        bool   `short:"j" long:"json"        description:"output search results as Json"`
 	Stdout      bool   `short:"P" long:"print"       description:"output search results in a pretty and readable format to stdout"`
