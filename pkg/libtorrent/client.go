@@ -1,7 +1,6 @@
 package libtorrent
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -9,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 	"time"
 
@@ -85,14 +83,6 @@ func (c *Client) DownloadTorrent(torrent string) error {
 	return nil
 }
 
-func (c *Client) ServeTorrents(ctx context.Context, torrents []*torrent.Torrent) {
-	for _, t := range torrents {
-		// it doesn't matter what episode included here, so it's just 0
-		link := c.ServeTorrent(t, 0)
-		fmt.Println(link)
-	}
-}
-
 func GetVideoFile(t *torrent.Torrent, episode int) (*torrent.File, error) {
 	f := t.Files()[episode]
 	ext := path.Ext(f.Path())
@@ -113,14 +103,6 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 
 	// check if the user requested a specific episode
 	fpath := queries.Get("filepath")
-
-	// get episode
-	ep, err := strconv.Atoi(queries.Get("ep"))
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		log.Println("server handler: couldnt parse episode number")
-		return
-	}
 
 	// idk why but this is always mangled af
 	hash = strings.TrimSpace(hash)
@@ -200,11 +182,16 @@ func (c *Client) StartServer() {
 	}()
 }
 
+func (c *Client) ServeTorrentEpisode(t *torrent.Torrent, filePath string) string {
+	mh := t.InfoHash().String()
+	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&filepath=%s", c.Port, mh, filePath)
+}
+
 // Generate a link that can be used with the default clients server to play a torrent
 // that is already loaded into the client
-func (c *Client) ServeTorrent(t *torrent.Torrent, episode int) string {
+func (c *Client) ServeTorrent(t *torrent.Torrent) string {
 	mh := t.InfoHash().String()
-	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&ep=%d", c.Port, mh, episode)
+	return fmt.Sprintf("http://localhost:%s/stream?hash=%s", c.Port, mh)
 }
 
 // returns a slice of loaded torrents or nil

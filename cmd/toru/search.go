@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/anacrolix/torrent"
 	"github.com/charmbracelet/lipgloss"
 	fzf "github.com/ktr0731/go-fuzzyfinder"
 	"github.com/sweetbbak/toru/pkg/libtorrent"
@@ -201,6 +202,27 @@ func fzfMain() (string, error) {
 	}
 
 	return m[idx], nil
+}
+
+func fzfEpisodes(m []*torrent.File) (string, error) {
+	idx, err := fzf.Find(
+		m,
+		func(i int) string {
+			fpath := m[i].DisplayPath()
+			return fpath
+		},
+	)
+
+	// User has selected nothing
+	if err != nil {
+		if errors.Is(err, fzf.ErrAbort) {
+			os.Exit(0)
+		} else {
+			return "", err
+		}
+	}
+
+	return m[idx].DisplayPath(), nil
 }
 
 func fzfMenu(m []nyaa.Media) (nyaa.Media, error) {

@@ -50,6 +50,7 @@ func Progress(t *torrent.Torrent) {
 }
 
 // takes any type of torrent file/url/magnet, adds it to the client and streams it
+// torfile is any of magnet, link or path to .torrent file.
 func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, error) {
 	success, _ := pterm.DefaultSpinner.Start("getting torrent info")
 	t, err := cl.AddTorrent(torfile)
@@ -60,16 +61,20 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, er
 
 	files := t.Files()
 	filesCount := len(files)
-	episode := 1
+
+	var fpath string
+	var link string
 
 	if filesCount != 1 {
-		episode, err = PromptEpisodeInRangeWithDefaultToMax(1, filesCount)
+		fpath, err = fzfEpisodes(files)
 		if err != nil {
 			return player.MediaEntry{}, err
 		}
-	}
 
-	link := cl.ServeTorrent(t, episode)
+		link = cl.ServeTorrentEpisode(t, fpath)
+	} else {
+		link = cl.ServeTorrent(t)
+	}
 
 	// consider deleting this as it sometimes conflicts with the fzf user interface
 	go func() {
@@ -78,8 +83,7 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, er
 		}
 	}()
 
-	filename := path.Base(files[episode-1].Path())
-
+	filename := path.Base(fpath)
 	return player.MediaEntry{Title: filename, URL: link}, nil
 }
 
