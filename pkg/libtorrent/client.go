@@ -110,10 +110,15 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	queries := r.URL.Query()
 	// get hash of torrent
 	hash := queries.Get("hash")
+
+	// check if the user requested a specific episode
+	fpath := queries.Get("filepath")
+
 	// get episode
 	ep, err := strconv.Atoi(queries.Get("ep"))
 	if err != nil {
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		log.Println("server handler: couldnt parse episode number")
 		return
 	}
 
@@ -121,30 +126,60 @@ func (c *Client) handler(w http.ResponseWriter, r *http.Request) {
 	hash = strings.TrimSpace(hash)
 	hash = strings.ReplaceAll(hash, "\n", "")
 
+	fpath = strings.TrimSpace(fpath)
+	fpath = strings.ReplaceAll(fpath, "\n", "")
+
 	if hash == "" {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 		log.Println("server handler: Hash query is empty")
 		return
 	}
 
+	var targetTorrent *torrent.Torrent
+
 	for _, ff := range ts {
 		<-ff.GotInfo()
 		ih := ff.InfoHash().String()
-
 		if ih == hash {
-			if ep == 0 {
-				ep = 1
-			}
-
-			f, err := GetVideoFile(ff, ep-1)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			w.Header().Set("Content-Type", "video/mp4")
-			http.ServeContent(w, r, f.DisplayPath(), time.Unix(f.Torrent().Metainfo().CreationDate, 0), f.NewReader())
+			targetTorrent = ff
 		}
 	}
+
+	if targetTorrent == nil {
+		http.Error(w, http.StatusText(400), http.StatusInternalServerError)
+		log.Println("server handler: couldnt find torrent by infohash")
+		return
+	}
+
+	// file count
+	fileCount := len(targetTorrent.Files())
+
+	// the file we will serve after checking user input
+	var targetFile *torrent.File
+
+	if fileCount == 1 {
+		// TODO: do bounds checking and make sure the file isn't a txt file or something
+		targetFile = targetTorrent.Files()[0]
+	}
+
+	if fpath != "" && fileCount > 1 {
+		for _, f := range targetTorrent.Files() {
+			// TODO: I have a feeling this will be problematic with weird characters and stuff, handle that.
+			if f.DisplayPath() == fpath {
+				targetFile = f
+				break
+			}
+		}
+	}
+
+	if targetFile == nil {
+		http.Error(w, http.StatusText(400), http.StatusInternalServerError)
+		log.Println("server handler: couldnt find torrent file requested")
+		return
+	}
+
+	w.Header().Set("Content-Type", "video/mp4")
+	http.ServeContent(w, r, targetFile.DisplayPath(), time.Unix(targetFile.Torrent().Metainfo().CreationDate, 0), targetFile.NewReader())
 }
 
 // start the server in the background
