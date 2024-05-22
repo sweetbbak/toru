@@ -43,7 +43,8 @@ func Completers() error {
 		fmt.Println(zsh_comp)
 	} else if completions.Bash {
 		fmt.Println(bash_comp)
+	} else {
+		return fmt.Errorf("Must choose a shell [bash|zsh] to output completions for")
 	}
-
-	return fmt.Errorf("Must choose a shell [bash|zsh] to output completions for")
+	return nil
 }
