@@ -279,7 +279,14 @@ source <(toru init --bash)
 
 ## Contributing
 
-PR's welcome! This project currently uses Golang 1.21.7 along with standard go formatting using `gopls`
+    Fork it!
+    Create your feature branch: git checkout -b my-new-feature
+    Commit your changes: git commit -m 'Add some feature'
+    Push to the branch: git push origin my-new-feature
+    Submit a pull request 🤘
+
+PR's welcome! This project currently uses Golang 1.21.7
+make sure to format go files using `gofmt`
 
 ## Why though?
 
