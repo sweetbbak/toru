@@ -6,20 +6,10 @@
 <a href="#MacOS"><img src="https://img.shields.io/badge/os-mac-brightgreen">
 <a href="#Android"><img src="https://img.shields.io/badge/os-android-brightgreen">
 <a href="#Windows"><img src="https://img.shields.io/badge/os-windows-yellowgreen">
-<a href="#iOS"><img src="https://img.shields.io/badge/os-ios-yellow">
 <a href="#Steam-deck"><img src="https://img.shields.io/badge/os-steamdeck-yellow">
 <br>
 <a href="https://www.buymeacoffee.com/sweetbabyalaska"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black"></a>
-<a href="https://github.com/sweetbbak"><img src="https://img.shields.io/badge/creator-sweet-green"></a>
 <br>
-</p>
-
-<p align="center">
-<a href="#golang"><img src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white">
-<a href="go"><img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black">
-<a href="linux"><img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white">
-<a href="bsd"><img src="https://img.shields.io/badge/-OpenBSD-%23FCC771?style=for-the-badge&logo=openbsd&logoColor=black">
-<a href="mac"><img src="https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0">
 </p>
 
 <h3 align="center">
@@ -52,8 +42,14 @@ mv toru "${PREFIX}"
 
 on Windows
 
-```sh
+```pwsh
 iwr -Uri "https://github.com/sweetbbak/toru/releases/download/v0.1/toru_Windows_x86_64.zip" -OutFile toru_Windows_x86_64.zip
+```
+
+With Nix
+
+```sh
+nix profile install github:sweetbbak/toru
 ```
 
 <details closed>
@@ -126,21 +122,15 @@ So far there is an issue with android and termux as well as arm 6.
 
 </details>
 
-if you are on nix or have nix installed you can just use the shell.nix directly and run `just` or `make` or use `go build -o toru ./cmd/toru`.
-
-## Changelog
-
-- added `--proxy` which allows use of nyaa proxy sites and sukebi
-- added the ability to disable ipv6
-- sub-command "run" now accepts a trailing search term argument
+if you are on nix or have nix installed you can just use the shell.nix directly and run `just` or `make`
 
 ## Examples
 
 Search for an anime:
 
 ```sh
-toru search -i
-toru search ""
+toru search -j "one piece" # outputs json
+toru search -i "one piece" # search interactively with fzf
 ```
 
 ![example of toru in progress](assets/search.png)
@@ -173,8 +163,7 @@ you can treat this link like any other http link and stream it with `mpv` or `vl
 
 #### Use a proxy Nyaa site
 
-this can be helpful for geoblocking and for browsing "special" Nyaa
-sites
+this can be helpful for geoblocking and for browsing "special" Nyaa sites
 
 ```sh
 toru search --proxy="https://sukebei.nyaa.si" -i
@@ -224,6 +213,29 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
   xargs toru stream --magnet
 ```
 
+### Shell completions
+
+_ZSH_
+
+Copy the file `_toru` from the `completions` directory into your `$FPATH`
+Run `echo $FPATH | sed "s/:/\n/g"` to see a list of directories in your `$FPATH`
+OR
+run this command in an interactive shell or put this command in you `.zshrc`
+
+```bash
+source <(toru init --zsh)
+```
+
+_BASH_
+
+Place the file `_toru_bash` from the `completions` directory into your completions path
+OR
+run this command in an interactive shell or put this command in you `.bashrc`
+
+```bash
+source <(toru init --bash)
+```
+
 > [!IMPORTANT]\
 > toru is in a very early development phase! In order to provide a consistent and smooth experience
 > the CLI interface is subject to change. PR's and advice on project sturcture, pkg organization and
@@ -241,24 +253,33 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 - [ ] package as various formats (AUR, DEB, Flatpak, AppImage, Release binaries)
 - [ ] ensure compatibility across platforms and aim for consistent compatibility (should work but currently untested)
 
+## Changelog
+
+2024-05-21
+
+- added zsh and bash completions
+- support multi-file torrents
+
+2024-03-1
+
+- added `--proxy` which allows use of nyaa proxy sites and sukebi
+- added the ability to disable ipv6
+- sub-command "run" now accepts a trailing search term argument
+
 ## Good issues to work on
 
-- [ ] add a package for Arch, Fedora, Nix, Scoop or otherwise
-- [ ] get toru working on Android. (currently an issue with connecting to peers via UDP)
+- [ ] add a package for your distro
 
 ## Roadmap
 
 - Daemonize into the background and listen for commands on a socket (optional for user, sometimes this is annoying)
 - Simple torrent client features (download|seed|add magnet|stream|search)
-- Look into file and search caching
 - Add other trackers besides `nyaa.si`
 - Expand user interface with bubbletea
-- Ensure we are not straining or leeching off of the network more than we are giving
 
 ## Contributing
 
 PR's welcome! This project currently uses Golang 1.21.7 along with standard go formatting using `gopls`
-TODO: add a development containerfile and automate building binaries for all platforms
 
 ## Why though?
 
