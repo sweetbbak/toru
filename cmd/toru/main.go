@@ -12,15 +12,16 @@ import (
 
 const (
 	binaryName = "toru"
-	version    = "v0.2"
+	version    = "v0.3"
 )
 
 var (
-	options    Options
-	runner     Run
-	streaming  Stream
-	searchopts Search
-	download   Download
+	options     Options
+	runner      Run
+	streaming   Stream
+	searchopts  Search
+	download    Download
+	completions Completions
 )
 
 var parser = flags.NewParser(&options, flags.Default)
@@ -44,6 +45,11 @@ func init() {
 		log.Fatal(err)
 	}
 	_, err = parser.AddCommand("version", "print version and debugging info", "print version and debugging info", &options)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = parser.AddCommand("init", "source zsh or bash completions", "", &completions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,6 +85,15 @@ func main() {
 		optArg = args[0]
 	} else {
 		optArg = ""
+	}
+
+	// dump shell completions to be sourced by shell init files
+	// keep this high up to avoid uneccesary hangups
+	if parser.Active.Name == "init" {
+		if err := Completers(); err != nil {
+			log.Fatal(err)
+		}
+		os.Exit(0)
 	}
 
 	cl := libtorrent.NewClient(binaryName, options.Port)

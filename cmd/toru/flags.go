@@ -19,6 +19,12 @@ type Options struct {
 type Run struct {
 }
 
+// source completions
+type Completions struct {
+	Bash bool `short:"b" long:"bash" description:"source bash completions"`
+	Zsh  bool `short:"z" long:"zsh"  description:"source zsh completions"`
+}
+
 // Streaming options
 type Stream struct {
 	Magnet      string         `short:"m" long:"magnet"    description:"stream directly from the provided torrent magnet link"`

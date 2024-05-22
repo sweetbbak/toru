@@ -1,0 +1,11 @@
+#compdef toru
+
+_toru() {
+    local -a completions
+    args=("${words[@]:1}")
+    local IFS=$'\n'
+    completions=($(GO_FLAGS_COMPLETION=1 ${words[1]} "${args[@]}"))
+    compadd -a completions
+}
+
+_toru
