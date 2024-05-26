@@ -1,9 +1,10 @@
 {
   lib,
+  go,
   fetchFromGitHub,
   buildGoModule,
 }:
-buildGoModule {
+buildGoModule.override {inherit go;} {
   pname = "toru";
   version = "0.3";
 
@@ -31,8 +32,10 @@ buildGoModule {
     mkdir -p $out/etc/bash_completion.d
     cp completion/_toru_bash $out/etc/bash_completion.d/_toru
 
+    mkdir -p $out/share/man
+    cp toru.1 $out/share/man
+
     mkdir -p $out/bin
-    ls
     mv toru $out/bin
   '';
 

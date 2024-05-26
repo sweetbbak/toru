@@ -26,7 +26,10 @@
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+        };
+        # pkgs = nixpkgs.legacyPackages.${system};
         go = pkgs.go;
       in {
         devShell = pkgs.mkShell {
@@ -37,8 +40,8 @@
           ];
           shellHook = ''
             export CGO_ENABLED=0
-            export GOOS=${system}
-            export GOARCH=${system}
+            # export GOOS=${system}
+            # export GOARCH=${system}
           '';
         };
 
