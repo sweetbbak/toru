@@ -21,8 +21,6 @@ Toru serves the selected anime over localhost, making it as accessible as any HT
 
 https://github.com/sweetbbak/toru/assets/75046310/4a2a8c2e-3a11-4771-b79e-66e4de77a8b8
 
-![example of toru in progress](assets/search.png)
-
 ## Table of Contents
 
 - [Install](#install)
