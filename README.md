@@ -19,7 +19,8 @@ Toru: Stream Torrents instantly, straight from the Command Line
 Toru, the command line tool designed for anime enthusiasts. Browse the latest releases on nyaa.si or search for specific titles with Toru's intuitive interface. Stream episodes directly from the command line using MPV or your favorite video player or browser.
 Toru serves the selected anime over localhost, making it as accessible as any HTTP link. It also functions as a convenient torrent client for magnet links. Simplify your streaming and torrenting with Toru.
 
-![video of toru](assets/toru.mp4)
+
+https://github.com/sweetbbak/toru/assets/75046310/4a2a8c2e-3a11-4771-b79e-66e4de77a8b8
 
 ![example of toru in progress](assets/example.gif)
 
