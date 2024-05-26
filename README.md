@@ -239,7 +239,7 @@ source <(toru init --bash)
 > the CLI interface is subject to change. PR's and advice on project sturcture, pkg organization and
 > feedback on the UI of toru is much appreciated.
 >
-> Currently tested on Linux and Windows
+> Currently tested on Linux, Mac and Windows
 > I would much appreciate someone reporting on the functionality on any BSD or Mac
 > Android with termux currently has UDP issues. Idk much about how android works
 
@@ -267,6 +267,7 @@ source <(toru init --bash)
 ## Good issues to work on
 
 - [ ] add a package for your distro
+- [ ] fix race condition in UI between progress bar and fzf interface when searching interactively
 
 ## Roadmap
 
@@ -283,8 +284,9 @@ source <(toru init --bash)
     Push to the branch: git push origin my-new-feature
     Submit a pull request 🤘
 
-PR's welcome! This project currently uses Golang 1.21.7
-make sure to format go files using `gofmt`
+PR's welcome! This project currently uses Golang 1.22.2
+make sure to format go files using `gofmt` and `alejandra` for nix. I'm likely to reject PR's that are directly to main unless they are small
+or are regarding typos, the readme or documentation.
 
 ## Why though?
 
@@ -305,3 +307,4 @@ Consider creating a PR, taking up a minor issue on the TODO list, leaving an iss
 me a coffee!
 
 ![moe-visitor-counter](https://count.getloli.com/get/@sweetbbak?theme=asoul)
+![moe](https://camo.githubusercontent.com/dbf5b38242697e9e50ac56f3d6dfec3a65057129fa1dde5d89afdd1a6e876ffe/68747470733a2f2f636f756e742e6765746c6f6c692e636f6d2f6765742f4073776565746262616b3f7468656d653d61736f756c)
