@@ -181,7 +181,7 @@ toru search --latest --json | jq -r '.[]|.Name,.Magnet'
 
 ```sh
 toru search --json "one piece" > cache.json
-toru search --from-json cacne.json --interactive
+toru search --from-json cache.json --interactive
 ```
 
 #### Output in a human readable format:
