@@ -215,10 +215,13 @@ fzf --preview='cat out.json | jq -r ".[{n}]"' \
 
 _ZSH_
 
-Copy the file `_toru` from the `completions` directory into your `$FPATH`
-Run `echo $FPATH | sed "s/:/\n/g"` to see a list of directories in your `$FPATH`
-OR
-run this command in an interactive shell or put this command in you `.zshrc`
+installing bash completions
+
+- Copy the file `_toru` from the `completions` directory into your `$FPATH`
+
+  - `echo $FPATH | sed "s/:/\n/g"` to see a list of directories in your `$FPATH`
+
+- run this command in an interactive shell or put this command in your `.zshrc`
 
 ```bash
 source <(toru init --zsh)
@@ -226,9 +229,11 @@ source <(toru init --zsh)
 
 _BASH_
 
-Place the file `_toru_bash` from the `completions` directory into your completions path
-OR
-run this command in an interactive shell or put this command in you `.bashrc`
+installing bash completions
+
+- Place the file `_toru_bash` from the `completions` directory into your completions path
+
+- run this command in an interactive shell or put it in your `.bashrc`
 
 ```bash
 source <(toru init --bash)
@@ -240,7 +245,7 @@ source <(toru init --bash)
 > feedback on the UI of toru is much appreciated.
 >
 > Currently tested on Linux, Mac and Windows
-> I would much appreciate someone reporting on the functionality on any BSD or Mac
+> I would much appreciate someone reporting on the functionality on any BSD, or any other niche device or architecture
 > Android with termux currently has UDP issues. Idk much about how android works
 
 ## Features
