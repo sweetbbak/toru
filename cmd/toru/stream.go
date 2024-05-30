@@ -73,6 +73,7 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, er
 
 		link = cl.ServeTorrentEpisode(t, fpath)
 	} else {
+		fpath = files[0].Path()
 		link = cl.ServeTorrent(t)
 	}
 
