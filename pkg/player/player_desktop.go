@@ -11,7 +11,7 @@ import (
 )
 
 var desktopPlayers = []GenericPlayer{
-	{Name: "mpv", Args: []string{"--script={{GetHelperScriptPath}}", "--script-opts-append=external-title={{.Title}}", "{{.URL}}"}, GetHelperScriptPath: mpv.GetScriptPath},
+	{Name: "mpv", Args: []string{"--script={{GetHelperScriptPath}}", "{{.URL}}"}, GetHelperScriptPath: mpv.GetScriptPath},
 	{Name: "vlc", Args: []string{"{{.URL}}"}},
 	{Name: "mplayer", Args: []string{"{{.URL}}"}},
 	{Name: "iina", Args: []string{"--no-stdin", "--keep-running", "{{.URL}}"}},

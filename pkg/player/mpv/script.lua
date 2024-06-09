@@ -1,14 +1,12 @@
 local mp = require('mp')
 
-mp.add_hook('on_load', 50, function()
+mp.register_event('file-loaded', function ()
   local media_title = mp.get_property('media-title')
-  local filename = mp.get_property('filename')
-  local external_title = mp.get_opt('external-title')
+  local url = mp.get_property('filename')
+  local filepath = string.gmatch(url, 'filepath=(.+)&?')()
 
-  if media_title == filename then
-    mp.msg.info(media_title)
-    mp.msg.info(filename)
-    mp.msg.info(external_title)
-    mp.set_property('force-media-title', external_title)
+  if filepath and media_title == url then
+    mp.msg.info(string.format('[toru] "%s" -> "%s"', media_title, filepath))
+    mp.set_property('force-media-title', filepath)
   end
 end)

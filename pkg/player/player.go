@@ -19,7 +19,6 @@ type Player interface {
 }
 
 type MediaEntry struct {
-	Title string
 	URL   string
 }
 
