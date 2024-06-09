@@ -193,7 +193,7 @@ func (c *Client) ServeTorrentEpisode(t *torrent.Torrent, filePath string) string
 // that is already loaded into the client
 func (c *Client) ServeTorrent(t *torrent.Torrent) string {
 	mh := t.InfoHash().String()
-	return fmt.Sprintf("http://localhost:%s/stream?hash=%s&filepath=%s", c.Port, mh, t.Files()[0].DisplayPath())
+	return fmt.Sprintf("http://localhost:%s/stream?hash=%s", c.Port, mh)
 }
 
 // returns a slice of loaded torrents or nil
