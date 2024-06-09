@@ -207,7 +207,7 @@ toru search --latest --json > out.json
 # you can also replace toru with any CLI bittorrent client
 cat out.json | jq '.[].Name' | \
 fzf --preview='cat out.json | jq -r ".[{n}]"' \
-  --bind "enter:execute(cat out.json | jq -r '.[{n}].Magnet')+abort" | \
+  --bind "enter:become(cat out.json | jq -r '.[{n}].Magnet')" | \
   xargs toru stream --magnet
 ```
 
