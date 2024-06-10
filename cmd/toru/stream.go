@@ -71,7 +71,12 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, er
 
 		link = cl.ServeTorrentEpisode(t, fpath)
 	} else {
-		link = cl.ServeTorrent(t)
+		if len(files) < 1 {
+			return player.MediaEntry{}, fmt.Errorf("oops something went wrong :P - no detected files in torrent in stream torrent")
+		}
+
+		file := files[0].DisplayPath()
+		link = cl.ServeTorrentEpisode(t, file)
 	}
 
 	// consider deleting this as it sometimes conflicts with the fzf user interface
@@ -86,17 +91,18 @@ func StreamTorrent(torfile string, cl *libtorrent.Client) (player.MediaEntry, er
 
 // play a single torrent from a provided magnet, torrent or torrent URL
 func PlayTorrent(cl *libtorrent.Client, magnet string) error {
-	l, err := StreamTorrent(magnet, cl)
+	link, err := StreamTorrent(magnet, cl)
 	if err != nil {
 		return err
 	}
+
 	p, err := player.NewPlayer(options.Player)
 	if err != nil {
 		return err
 	}
 
 	// get a new player and start the media
-	proc, err := p.Open(l)
+	proc, err := p.Open(link)
 	if err != nil {
 		return err
 	}
@@ -104,7 +110,9 @@ func PlayTorrent(cl *libtorrent.Client, magnet string) error {
 	var px *os.ProcessState
 	// wait for player to close
 	px, err = proc.Wait()
+
 	for !px.Exited() {
+		time.Sleep(time.Millisecond * 500)
 	}
 
 	return nil
