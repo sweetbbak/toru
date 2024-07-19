@@ -205,10 +205,12 @@ func fzfMain() (string, error) {
 }
 
 func fzfEpisodes(m []*torrent.File) (string, error) {
+	l := len(m) - 1
 	idx, err := fzf.Find(
 		m,
 		func(i int) string {
-			fpath := m[i].DisplayPath()
+			// fpath := m[i].DisplayPath()
+			fpath := m[l-i].DisplayPath()
 			return fpath
 		},
 	)
