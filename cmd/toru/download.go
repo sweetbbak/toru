@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/pterm/pterm"
@@ -26,15 +27,18 @@ func DownloadTorrent(cl *libtorrent.Client) error {
 	}
 
 	success.Success("Success!")
+	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
-		Progress(t)
+		Progress(t, ctx)
 	}()
 
 	t.DownloadAll()
 	if cl.TorrentClient.WaitAll() {
+		cancel()
 		return nil
 	} else {
+		cancel()
 		return fmt.Errorf("Unable to completely download torrent: %s", t.Name())
 	}
 }
