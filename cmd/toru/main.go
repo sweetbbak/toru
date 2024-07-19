@@ -60,8 +60,8 @@ func init() {
 	d.Aliases = []string{"dl", "d"}
 
 	// port for server *NOT TORRENT PORT*
-	options.Port = "8888"
-	options.TorrentPort = -1
+	options.Port = libtorrent.INTERNAL_STREAM_PORT // port 8888 or the next open port available
+	options.TorrentPort = -1                       // set to -1 -> or user input here -> or set by libtorrent on backend to any open port
 
 	if len(os.Args) == 1 {
 		osargs = append(osargs, "run")
@@ -99,8 +99,8 @@ func main() {
 	cl := libtorrent.NewClient(binaryName, options.Port)
 	cl.DisableIPV6 = options.DisableIPV6
 
-	if options.TorrentPort == -1 {
-		cl.TorrentPort = 42069
+	if options.TorrentPort != -1 {
+		cl.TorrentPort = options.TorrentPort
 	}
 
 	if err := cl.Init(); err != nil {

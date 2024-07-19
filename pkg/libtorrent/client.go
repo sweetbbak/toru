@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"path"
@@ -12,6 +13,10 @@ import (
 
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/storage"
+)
+
+const (
+	INTERNAL_STREAM_PORT = "8888"
 )
 
 type Client struct {
@@ -54,9 +59,23 @@ func (c *Client) Init() error {
 
 	cfg.DisableIPv6 = c.DisableIPV6
 
-	// sanity check
-	if c.TorrentPort == -1 {
-		c.TorrentPort = 42069
+	// sanity check - get open port to allow for multiple instances of toru
+	if c.TorrentPort < 5 {
+		port, err := GetFreePort()
+		if err != nil {
+			c.TorrentPort = 42069
+		} else {
+			c.TorrentPort = port
+		}
+	}
+
+	if c.Port == INTERNAL_STREAM_PORT {
+		p, err := GetFreePortString()
+		if err != nil {
+			c.Port = INTERNAL_STREAM_PORT
+		} else {
+			c.Port = p
+		}
 	}
 
 	cfg.ListenPort = c.TorrentPort
@@ -92,6 +111,30 @@ func IsVideoFile(f *torrent.File) bool {
 	default:
 		return false
 	}
+}
+
+// get a free port in string format
+func GetFreePortString() (string, error) {
+	port, err := GetFreePort()
+	if err != nil {
+		return INTERNAL_STREAM_PORT, err
+	}
+	return fmt.Sprintf("%d", port), nil
+}
+
+// get a free port
+func GetFreePort() (int, error) {
+	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+	if err != nil {
+		return 0, err
+	}
+
+	l, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
 // HTTP handler for ServeTorrent allowing for query by hash for the torrent and filepath for the subsequent video
