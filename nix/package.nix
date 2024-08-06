@@ -6,13 +6,13 @@
 }:
 buildGoModule.override {inherit go;} {
   pname = "toru";
-  version = "0.3";
+  version = "0.3.2";
 
   src = fetchFromGitHub {
     owner = "sweetbbak";
     repo = "toru";
-    rev = "bb0d81894f59bf4c849502bd9cdab42ba79fdffe";
-    hash = "sha256-oIPXODgXO5HvDLGxUT43IibkznNbJIQA5DvC3QDcWRw=";
+    rev = "2bb096506fb154670c036ee1d9938984af4b22d8";
+    hash = "sha256-rfnZvo1O46EW794T0/JaV9Wb8JxnTrbo/aD7EgeHcFc=";
   };
 
   vendorHash = "sha256-04fHwblTspzecnTizUlFqLwtcnBsHrFRvLX1eSXztRI=";
