@@ -50,6 +50,8 @@ type Download struct {
 	} `positional-args:"yes" positional-arg-name:"TORRENT"`
 }
 
+type Latest struct{}
+
 // Non-interactive CLI search options
 type Search struct {
 	SortBy      string `short:"b" long:"sort-by"     description:"sort results by a category [size|date|seeders|leechers|downloads]"`
@@ -72,3 +74,4 @@ type Search struct {
 		Query string
 	} `positional-args:"yes" positional-arg-name:"QUERY"`
 }
+

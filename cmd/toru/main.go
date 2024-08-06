@@ -22,6 +22,7 @@ var (
 	searchopts  Search
 	download    Download
 	completions Completions
+	latest      Latest
 )
 
 var parser = flags.NewParser(&options, flags.Default)
@@ -43,12 +44,16 @@ func init() {
 	d, err := parser.AddCommand("download", "download torrents", "download torrent from .torrent file, magnet or URL to a .torrent file", &download)
 	if err != nil {
 		log.Fatal(err)
+
+	}
+	_, err = parser.AddCommand("latest", "get the latest anime", "get the latest anime from nyaa.si", &latest)
+	if err != nil {
+		log.Fatal(err)
 	}
 	_, err = parser.AddCommand("version", "print version and debugging info", "print version and debugging info", &options)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	_, err = parser.AddCommand("init", "source zsh or bash completions", "", &completions)
 	if err != nil {
 		log.Fatal(err)
@@ -80,7 +85,7 @@ func main() {
 		}
 	}
 
-	var optArg string
+	var optArg string // optional positional search argument
 	if len(args) > 0 {
 		optArg = args[0]
 	} else {
@@ -123,6 +128,12 @@ func main() {
 		os.Exit(0)
 	case "run", "interactive":
 		if err := InteractiveSearch(cl, optArg); err != nil {
+			log.Fatal(err)
+		}
+	case "latest":
+		searchopts.Latest = true
+		searchopts.Interactive = true
+		if err := runSearch(cl); err != nil {
 			log.Fatal(err)
 		}
 	case "version":
