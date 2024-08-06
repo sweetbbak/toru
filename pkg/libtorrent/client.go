@@ -22,10 +22,14 @@ const (
 type Client struct {
 	// client / project name, will be the default directory name
 	Name string
-	// directory to download torrents to
+	// directory to hold streamed torrents and metainfo
 	DataDir string
+	// directory to download to based on user defined input
+	DownloadDir string
 	// Seed or no
 	Seed bool
+	// turn off the HTTP server for streaming torrents
+	NoServer bool
 	// Port to stream torrents on
 	Port string
 	// Port to stream torrents on
@@ -43,14 +47,34 @@ type Client struct {
 // create a default client, must call Init afterwords
 func NewClient(name string, port string) *Client {
 	return &Client{
-		Name: name,
-		Port: port,
-		Seed: false,
+		Name:     name,
+		Port:     port,
+		NoServer: false,
+		Seed:     true,
+	}
+}
+
+// set the download location for the torrent client
+func (c *Client) SetDownloadDir(dir string) {
+	c.DownloadDir = dir
+}
+
+// turn off the internal http server that handles streaming if it is not needed
+func (c *Client) SetServerOFF(off bool) {
+	c.NoServer = off
+}
+
+type ClientOption func(args *Client) error
+
+func SetDataDir(dir string) ClientOption {
+	return func(args *Client) error {
+		args.DataDir = dir
+		return nil
 	}
 }
 
 // Initialize torrent configuration
-func (c *Client) Init() error {
+func (c *Client) Init(opts ...ClientOption) error {
 	cfg := torrent.NewDefaultClientConfig()
 	s, err := c.getStorage()
 	if err != nil {
@@ -78,18 +102,58 @@ func (c *Client) Init() error {
 		}
 	}
 
+	// set defaults
 	cfg.ListenPort = c.TorrentPort
 	c.DataDir = s
-	cfg.DefaultStorage = storage.NewFileByInfoHash(c.DataDir)
+
+	// default overrides
+	for _, setter := range opts {
+		if setter == nil {
+			log.Println("option supplied is nil")
+			continue
+		}
+
+		err := setter(c)
+		if err != nil {
+			return err
+		}
+	}
+
+	var stor storage.ClientImpl
+	if c.DownloadDir == "" {
+		c.DownloadDir = s
+		stor = storage.NewFileByInfoHash(c.DataDir)
+	} else {
+		stor, err = getMetadataDir(c.DataDir, c.DownloadDir)
+	}
+
+	cfg.DefaultStorage = stor
 
 	client, err := torrent.NewClient(cfg)
 	if err != nil {
 		return fmt.Errorf("error creating a new torrent client: %v", err)
 	}
 
-	c.StartServer()
+	if !c.NoServer {
+		c.StartServer()
+	}
 	c.TorrentClient = client
 	return nil
+}
+
+func getMetadataDir(metadataDir, downloadDir string) (storage.ClientImpl, error) {
+	mstor, err := storage.NewDefaultPieceCompletionForDir(metadataDir)
+	if err != nil {
+		log.Println("unable to set download dir, falling back to data dir:", err)
+		return storage.NewMMap(downloadDir), nil
+	}
+
+	tstor := storage.NewMMapWithCompletion(downloadDir, mstor)
+	if err != nil {
+		return nil, err
+	}
+
+	return tstor, err
 }
 
 // add a torrent and mark it entirely for download

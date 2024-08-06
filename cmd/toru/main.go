@@ -22,6 +22,7 @@ var (
 	searchopts  Search
 	download    Download
 	completions Completions
+	wget        WGET
 	latest      Latest
 )
 
@@ -41,10 +42,14 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	d, err := parser.AddCommand("download", "download torrents", "download torrent from .torrent file, magnet or URL to a .torrent file", &download)
+	d, err := parser.AddCommand("download", "select one or many torrents to download", "download torrent from .torrent file, magnet or URL to a .torrent file", &download)
 	if err != nil {
 		log.Fatal(err)
 
+	}
+	_, err = parser.AddCommand("wget", "wget a torrent file", "wget a torrent file", &wget)
+	if err != nil {
+		log.Fatal(err)
 	}
 	_, err = parser.AddCommand("latest", "get the latest anime", "get the latest anime from nyaa.si", &latest)
 	if err != nil {
@@ -108,6 +113,13 @@ func main() {
 		cl.TorrentPort = options.TorrentPort
 	}
 
+	if parser.Active.Name == "download" {
+		if err := DownloadMain(cl); err != nil {
+			log.Fatal(err)
+		}
+		os.Exit(0)
+	}
+
 	if err := cl.Init(); err != nil {
 		log.Fatal(err)
 	}
@@ -121,7 +133,7 @@ func main() {
 		if err := runStream(cl); err != nil {
 			log.Fatal(err)
 		}
-	case "dl", "download":
+	case "wget":
 		if err := DownloadTorrent(cl); err != nil {
 			log.Fatal(err)
 		}

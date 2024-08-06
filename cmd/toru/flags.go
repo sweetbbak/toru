@@ -27,11 +27,11 @@ type Completions struct {
 
 // Streaming options
 type Stream struct {
-	Magnet      string         `short:"m" long:"magnet"    description:"stream directly from the provided torrent magnet link"`
-	TorrentFile string         `short:"t" long:"torrent"   description:"stream directly from the provided torrent file or torrent URL"`
-	Remove      bool           `          long:"rm"        description:"remove cached files after exiting"`
-	Latest      bool           `short:"l" long:"latest"    description:"view the latest anime and select an episode"`
-	FromJson    flags.Filename `short:"j" long:"from-json" description:"resume selection from prior search saved as json [see: toru search --help]"`
+	Magnet      string         `short:"m" long:"magnet"                                   description:"stream directly from the provided torrent magnet link"`
+	TorrentFile string         `short:"t" long:"torrent"                                  description:"stream directly from the provided torrent file or torrent URL"`
+	Remove      bool           `long:"rm" description:"remove cached files after exiting"`
+	Latest      bool           `short:"l" long:"latest"                                   description:"view the latest anime and select an episode"`
+	FromJson    flags.Filename `short:"j" long:"from-json"                                description:"resume selection from prior search saved as json [see: toru search --help]"`
 
 	// optional magnet link or torrent file as a trailing argument instead of explicitly defined
 	Args struct {
@@ -39,15 +39,35 @@ type Stream struct {
 	} `positional-args:"yes" positional-arg-name:"TORRENT"`
 }
 
-// Downloading options
+// Downloading options by selecting items from a query
 type Download struct {
-	Directory   string `short:"d" long:"dir" description:"parent directory to download torrents to"`
-	TorrentFile string `short:"t" long:"torrent" description:"explicitly define torrent magnet|file|url to download"`
+	Directory string `short:"o" long:"output"     description:"parent directory to download torrents to"`
+	Query     string `short:"q" long:"query"      description:"query to search for"`
+	SortBy    string `short:"b" long:"sort-by"    description:"sort results by a category [size|date|seeders|leechers|downloads]"`
+	SortOrder string `short:"O" long:"sort-order" description:"sort by ascending or descending: options [asc|desc]"                       choice:"asc"`
+	User      string `short:"u" long:"user"       description:"search for content by a user"`
+	Filter    string `short:"f" long:"filter"     description:"filter content. Options: [no-remakes|trusted]"`
+	Page      uint   `short:"p" long:"page"       description:"which results page to display [default 1]"`
+	Stream    bool   `short:"s" long:"stream"     description:"stream selected torrents after search"`
+	Multi     bool   `short:"m" long:"multi"      description:"choose multiple torrents to queue for downloading or streaming"`
+	Latest    bool   `short:"n" long:"latest"     description:"view the latest anime"`
+	Category  string `short:"c" long:"category"   description:"search torrents by a category: run [toru search --list] to see categories"`
 
 	// magnet link, torrent or torrent file url
 	Args struct {
 		Query string
-	} `positional-args:"yes" positional-arg-name:"TORRENT"`
+	} `positional-args:"yes" positional-arg-name:"QUERY"`
+}
+
+// Downloading options, moved to simple download section
+type WGET struct {
+	Directory   flags.Filename `short:"d" long:"dir"     description:"parent directory to download torrents to"`
+	TorrentFile flags.Filename `short:"t" long:"torrent" description:"explicitly define torrent magnet|file|url to download"`
+
+	// magnet link, torrent or torrent file url
+	Args struct {
+		Query string
+	} `positional-args:"yes" positional-arg-name:"QUERY"`
 }
 
 type Latest struct{}
@@ -55,7 +75,7 @@ type Latest struct{}
 // Non-interactive CLI search options
 type Search struct {
 	SortBy      string `short:"b" long:"sort-by"     description:"sort results by a category [size|date|seeders|leechers|downloads]"`
-	SortOrder   string `short:"o" long:"sort-order"  description:"sort by ascending or descending: options [asc|desc]" choice:"asc"`
+	SortOrder   string `short:"o" long:"sort-order"  description:"sort by ascending or descending: options [asc|desc]"                       choice:"asc"`
 	User        string `short:"u" long:"user"        description:"search for content by a user"`
 	Filter      string `short:"f" long:"filter"      description:"filter content. Options: [no-remakes|trusted]"`
 	Page        uint   `short:"p" long:"page"        description:"which results page to display [default 1]"`
@@ -74,4 +94,3 @@ type Search struct {
 		Query string
 	} `positional-args:"yes" positional-arg-name:"QUERY"`
 }
-

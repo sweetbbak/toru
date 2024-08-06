@@ -254,3 +254,36 @@ func fzfMenu(m []nyaa.Media) (nyaa.Media, error) {
 
 	return m[idx], nil
 }
+
+func fzfMenuMulti(m []nyaa.Media) ([]nyaa.Media, error) {
+	idxs, err := fzf.FindMulti(
+		m,
+		func(i int) string {
+			return m[i].Name
+		},
+		fzf.WithPreviewWindow(func(i, width, height int) string {
+			if i == -1 {
+				return "lol"
+			}
+
+			return FormatMedia(m[i])
+
+		}),
+	)
+
+	var matches []nyaa.Media
+	for _, item := range idxs {
+		matches = append(matches, m[item])
+	}
+
+	// User has selected nothing
+	if err != nil {
+		if errors.Is(err, fzf.ErrAbort) {
+			os.Exit(0)
+		} else {
+			return nil, err
+		}
+	}
+
+	return matches, nil
+}
