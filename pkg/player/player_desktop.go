@@ -18,15 +18,7 @@ var desktopPlayers = []GenericPlayer{
 	{Name: "catt", Args: []string{"cast", "{{.URL}}"}},
 }
 
-// get a generic player for playing media
-// pass an optional string with either a player + args or a player name
-// can be empty. use "{{.URL}}" as a placeholder for the url if needed
-func NewPlayer(player string) (GenericPlayer, error) {
-	var command []string
-	if len(command) > 0 {
-		command = strings.Split(player, " ")
-	}
-
+func findPlayer() (GenericPlayer, error) {
 	for _, p := range desktopPlayers {
 		_, err := exec.LookPath(p.Name)
 		if err != nil {
@@ -37,4 +29,35 @@ func NewPlayer(player string) (GenericPlayer, error) {
 	}
 
 	return GenericPlayer{}, fmt.Errorf("No supported player found")
+}
+
+// get a generic player for playing media
+// pass an optional string with either a player + args or a player name
+// can be empty. use "{{.URL}}" as a placeholder for the url if needed
+func NewPlayer(player string) (GenericPlayer, error) {
+	var command []string
+	if len(player) > 0 {
+		command = strings.Split(player, " ")
+	}
+
+	switch len(command) {
+	case 0:
+		// no player provided
+		// look for one or return error
+		return findPlayer()
+	case 1:
+		// the "defualt" players on Android
+		switch strings.ToLower(command[0]) {
+		case "mpv":
+			return desktopPlayers[0], nil
+		case "vlc":
+			return desktopPlayers[1], nil
+		default:
+			return GenericPlayer{Name: command[0], Args: command[1:]}, nil
+		}
+	default:
+		// else we assume the user knows what they want to do here and just create a player based on what they want
+		// this allows non-standard players, like a browser or terminal
+		return GenericPlayer{Name: command[0], Args: command[1:]}, nil
+	}
 }

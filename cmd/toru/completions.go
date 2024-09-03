@@ -40,9 +40,9 @@ complete -F _completion_toru toru
 
 func Completers() error {
 	if completions.Zsh {
-		fmt.Println(zsh_comp)
+		fmt.Print(zsh_comp)
 	} else if completions.Bash {
-		fmt.Println(bash_comp)
+		fmt.Print(bash_comp)
 	} else {
 		return fmt.Errorf("Must choose a shell [bash|zsh] to output completions for")
 	}

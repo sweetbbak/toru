@@ -1,3 +1,5 @@
+//go:build android
+
 package player
 
 import (
@@ -29,11 +31,16 @@ func (p GenericPlayer) Open(media MediaEntry) (*os.Process, error) {
 // can be empty. use "{{.URL}}" as a placeholder for the url if needed
 func NewPlayer(player string) (GenericPlayer, error) {
 	var command []string
-	if len(command) > 0 {
+	if len(player) > 0 {
 		command = strings.Split(player, " ")
 	}
 
-	if len(command) > 0 {
+	switch len(command) {
+	case 0:
+		// no player provided
+		return GenericPlayer{}, fmt.Errorf("Unknown or empty player specified by user")
+	case 1:
+		// the "defualt" players on Android
 		switch strings.ToLower(command[0]) {
 		case "mpv":
 			return androidPlayers[0], nil
@@ -42,7 +49,9 @@ func NewPlayer(player string) (GenericPlayer, error) {
 		default:
 			return GenericPlayer{Name: command[0], Args: command[1:]}, nil
 		}
+	default:
+		// else we assume the user knows what they want to do here and just create a player based on what they want
+		// this allows non-standard players, like a browser or terminal
+		return GenericPlayer{Name: command[0], Args: command[1:]}, nil
 	}
-
-	return GenericPlayer{}, fmt.Errorf("Unknown or empty player specified by user")
 }

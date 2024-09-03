@@ -12,7 +12,7 @@ import (
 
 const (
 	binaryName = "toru"
-	version    = "v0.3"
+	version    = "v0.3.2"
 )
 
 var (

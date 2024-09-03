@@ -1,7 +1,5 @@
 package main
 
-import "github.com/jessevdk/go-flags"
-
 // Global application options
 type Options struct {
 	// verbosity with level
@@ -27,11 +25,11 @@ type Completions struct {
 
 // Streaming options
 type Stream struct {
-	Magnet      string         `short:"m" long:"magnet"                                   description:"stream directly from the provided torrent magnet link"`
-	TorrentFile string         `short:"t" long:"torrent"                                  description:"stream directly from the provided torrent file or torrent URL"`
-	Remove      bool           `long:"rm" description:"remove cached files after exiting"`
-	Latest      bool           `short:"l" long:"latest"                                   description:"view the latest anime and select an episode"`
-	FromJson    flags.Filename `short:"j" long:"from-json"                                description:"resume selection from prior search saved as json [see: toru search --help]"`
+	Magnet      string `short:"m" long:"magnet"                                   description:"stream directly from the provided torrent magnet link"`
+	TorrentFile string `short:"t" long:"torrent"                                  description:"stream directly from the provided torrent file or torrent URL"`
+	Remove      bool   `long:"rm" description:"remove cached files after exiting"`
+	Latest      bool   `short:"l" long:"latest"                                   description:"view the latest anime and select an episode"`
+	FromJson    string `short:"j" long:"from-json"                                description:"resume selection from prior search saved as json [see: toru search --help]"`
 
 	// optional magnet link or torrent file as a trailing argument instead of explicitly defined
 	Args struct {
@@ -61,8 +59,8 @@ type Download struct {
 
 // Downloading options, moved to simple download section
 type WGET struct {
-	Directory   flags.Filename `short:"d" long:"dir"     description:"parent directory to download torrents to"`
-	TorrentFile flags.Filename `short:"t" long:"torrent" description:"explicitly define torrent magnet|file|url to download"`
+	Directory   string `short:"d" long:"dir"     description:"parent directory to download torrents to"`
+	TorrentFile string `short:"t" long:"torrent" description:"explicitly define torrent magnet|file|url to download"`
 
 	// magnet link, torrent or torrent file url
 	Args struct {
