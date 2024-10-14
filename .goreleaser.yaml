@@ -6,7 +6,7 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
 
-version: 1
+version: 2
 
 before:
   hooks:
@@ -59,19 +59,19 @@ builds:
       #   goarm: v1
       #   env:
       #     - CGO_ENABLED=1
-          # - CC=arm-linux-gnueabi-gcc
+      # - CC=arm-linux-gnueabi-gcc
       # - goos: android
       #   goarch: amd64
       #   goarm: v2
       #   env:
       #     - CGO_ENABLED=1
-          # - CC=arm-linux-gnueabi-gcc
+      # - CC=arm-linux-gnueabi-gcc
       # - goos: android
       #   goarch: amd64
       #   goarm: v3
       #   env:
       #     - CGO_ENABLED=1
-          # - CC=arm-linux-gnueabi-gcc
+      # - CC=arm-linux-gnueabi-gcc
 
       # - goos: android
       #   goarch: arm
@@ -85,27 +85,27 @@ builds:
       #   goarm: 7
       #   env:
       #     - CGO_ENABLED=1
-          # - CC=arm-linux-gnueabi-gcc
+      # - CC=arm-linux-gnueabi-gcc
 
       # - goos: android
       #   goarch: arm64
       #   goamd64: v1
       #   env:
       #     - CGO_ENABLED=1
-          # - CC=arm-linux-gnueabi-gcc
+      # - CC=arm-linux-gnueabi-gcc
       # - goos: android
       #   goarch: arm64
       #   goamd64: v2
       #   env:
       #     - CGO_ENABLED=1
-          # - CC=arm-linux-gnueabi-gcc
+      # - CC=arm-linux-gnueabi-gcc
 
       # - goos: android
       #   goarch: arm64
       #   goamd64: v3
       #   env:
       #     - CGO_ENABLED=1
-          # - CC=arm-linux-gnueabi-gcc
+      # - CC=arm-linux-gnueabi-gcc
 
 archives:
   - format: tar.gz
@@ -134,4 +134,3 @@ upx:
     compress: best
     lzma: true
     brute: true
-
