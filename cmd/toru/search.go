@@ -224,7 +224,7 @@ func fzfEpisodes(m []*torrent.File) (string, error) {
 		}
 	}
 
-	return m[idx].DisplayPath(), nil
+	return m[l-idx].DisplayPath(), nil
 }
 
 func fzfMenu(m []nyaa.Media) (nyaa.Media, error) {
