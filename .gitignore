@@ -1,3 +1,8 @@
-
 dist/
 dist2/
+pkg/player/player_android_test.go
+/toru
+# Unignore all dirs
+# !*/
+# Unignore all with extensions
+# !*.*
